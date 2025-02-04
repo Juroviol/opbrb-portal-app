@@ -17,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
     <ConfigProvider
       locale={locale}
       theme={{
+        cssVar: true,
         token: {
           colorPrimary: '#7b0808',
           colorInfo: '#7b0808',

@@ -26,6 +26,7 @@
     "paths": {
       "@assets/*": ["src/assets/*"],
       "@features/*": ["src/features/*"],
+      "@components/*": ["src/components/*"],
     }
   },
   "include": [

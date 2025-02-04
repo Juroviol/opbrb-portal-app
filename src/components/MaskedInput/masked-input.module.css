@@ -1,0 +1,17 @@
+.input:hover {
+    border-color: var(--ant-input-hover-border-color);
+}
+
+.input:focus {
+    border-color: var(--ant-input-active-border-color);
+    box-shadow: var(--ant-input-active-shadow);
+    outline: 0;
+    background-color: var(--ant-input-active-bg);
+}
+
+.input[aria-invalid=true] {
+    background: var(--ant-color-bg-container);
+    border-width: var(--ant-line-width);
+    border-style: var(--ant-line-type);
+    border-color: var(--ant-color-error);
+}

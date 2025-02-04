@@ -11,52 +11,143 @@ import {
   Select,
   Steps,
   Typography,
+  Upload,
 } from 'antd';
-import { MaskedInput } from 'antd-mask-input';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import LogoEscritoTransparente from '@assets/logo_escrito_transparente.png';
-import { email, isCPF, required } from '../../../validators.ts';
+import {
+  email,
+  equalToField,
+  isCEP,
+  isCPF,
+  required,
+} from '../../../validators.ts';
+import MaskedInput from '@components/MaskedInput';
+import { omit, range } from 'lodash';
+import { InboxOutlined } from '@ant-design/icons';
+import { RcFile } from 'antd/es/upload/interface';
 
 enum Step {
   PERSONAL_INFORMATION = 'Informações pessoais',
   ADDRESS = 'Endereço',
   CONTACT_INFORMATION = 'Informações de contato',
-  RECOMENDATION_LETTER = 'Carta de recomendação',
-  CREDENTIALS = 'Credenciais',
+  MINISTRY = 'Ministério',
+  CREDENTIALS = 'Usuário e Senha',
 }
 
+type FormFields = {
+  name: string;
+  cpf: string;
+  email: string;
+  password: string;
+  zipCode: string;
+  street: string;
+  city: string;
+  state: string;
+  number: string;
+  district: string;
+  letter: RcFile;
+};
+
+const UFS = [
+  { label: 'Acre', value: 'Acre' },
+  { label: 'Alagoas', value: 'Alagoas' },
+  { label: 'Amapá', value: 'Amapá' },
+  { label: 'Amazonas', value: 'Amazonas' },
+  { label: 'Bahia', value: 'Bahia' },
+  { label: 'Ceará', value: 'Ceará' },
+  { label: 'Distrito Federal', value: 'Distrito Federal' },
+  { label: 'Espírito Santo', value: 'Espírito Santo' },
+  { label: 'Goiás', value: 'Goiás' },
+  { label: 'Maranhão', value: 'Maranhão' },
+  { label: 'Mato Grosso', value: 'Mato Grosso' },
+  { label: 'Mato Grosso do Sul', value: 'Mato Grosso do Sul' },
+  { label: 'Minas Gerais', value: 'Minas Gerais' },
+  { label: 'Pará', value: 'Pará' },
+  { label: 'Paraíba', value: 'Paraíba' },
+  { label: 'Paraná', value: 'Paraná' },
+  { label: 'Pernambuco', value: 'Pernambuco' },
+  { label: 'Piauí', value: 'Piauí' },
+  { label: 'Rio de Janeiro', value: 'Rio de Janeiro' },
+  { label: 'Rio Grande do Norte', value: 'Rio Grande do Norte' },
+  { label: 'Rio Grande do Sul', value: 'Rio Grande do Sul' },
+  { label: 'Rondônia', value: 'Rondônia' },
+  { label: 'Roraima', value: 'Roraima' },
+  { label: 'Santa Catarina', value: 'Santa Catarina' },
+  { label: 'São Paulo', value: 'São Paulo' },
+  { label: 'Sergipe', value: 'Sergipe' },
+  { label: 'Tocantins', value: 'Tocantins' },
+];
+
+const MINISTRY_ORDINANCE_TIME = [
+  ...range(1, 12).map((v) => ({
+    label: `${v} ${v > 1 ? 'meses' : 'mês'}`,
+    value: v,
+  })),
+  ...range(1, 101).map((v) => ({
+    label: `${v} ${v > 1 ? 'anos' : 'ano'}`,
+    value: v * 12,
+  })),
+];
+
 export default function Registration() {
-  const [currentStep] = useState(0);
-  const [form] = Form.useForm<{
-    name: string;
-    cpf: string;
-    email: string;
-    password: string;
-    zipCode: string;
-    street: string;
-    city: string;
-    state: string;
-    number: string;
-    district: string;
-  }>();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [form] = Form.useForm<FormFields>();
+
+  useEffect(() => {
+    let step = currentStep;
+    for (let i = 0; i < localStorage.length - 1; i++) {
+      if (Object.values(Step).includes(localStorage.key(i) as Step)) {
+        step++;
+        form.setFieldsValue(
+          JSON.parse(
+            localStorage.getItem(localStorage.key(i) as string) as string
+          )
+        );
+      }
+    }
+    setCurrentStep(step);
+  }, []);
+
+  const handleBeforeUpload = useCallback((file: RcFile) => {
+    form.setFieldValue('letter', file);
+    return false;
+  }, []);
 
   const handleValuesChange = useCallback(
     ({ zipCode }: { zipCode: string }) => {
-      const unmaskedZipCode = zipCode.replace(/[^\d]/g, '');
-      if (unmaskedZipCode && unmaskedZipCode.length === 8) {
-        fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
-          .then((res) => res.json())
-          .then((json) => {
-            form.setFieldsValue({
-              street: json.logradouro,
-              city: json.localidade,
-              state: json.estado,
-              district: json.bairro,
+      if (zipCode) {
+        const unmaskedZipCode = zipCode.replace(/[^\d]/g, '');
+        if (unmaskedZipCode && unmaskedZipCode.length === 8) {
+          fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
+            .then((res) => res.json())
+            .then((json) => {
+              form.setFieldsValue({
+                street: json.logradouro,
+                city: json.localidade,
+                state: json.estado,
+                district: json.bairro,
+              });
             });
-          });
+        }
       }
     },
     [form]
+  );
+
+  const handleFinish = useCallback(
+    (values: object) => {
+      localStorage.setItem(
+        steps[currentStep].title,
+        JSON.stringify(omit(values, 'letter'))
+      );
+      if (steps[currentStep].title !== Step.CREDENTIALS) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        console.log(values);
+      }
+    },
+    [currentStep]
   );
 
   const steps = useMemo(
@@ -71,7 +162,7 @@ export default function Registration() {
         title: Step.CONTACT_INFORMATION,
       },
       {
-        title: Step.RECOMENDATION_LETTER,
+        title: Step.MINISTRY,
       },
       {
         title: Step.CREDENTIALS,
@@ -99,11 +190,17 @@ export default function Registration() {
         items={steps}
         style={{ marginTop: 30, marginBottom: 40 }}
       />
-      <Form form={form} onValuesChange={handleValuesChange} layout="vertical">
+      <Form
+        preserve
+        form={form}
+        onValuesChange={handleValuesChange}
+        onFinish={handleFinish}
+        layout="vertical"
+      >
         {steps[currentStep].title === Step.PERSONAL_INFORMATION && (
           <>
-            <Row gutter={10}>
-              <Col span={12}>
+            <Row>
+              <Col span={24}>
                 <Form.Item
                   name="name"
                   rules={[required()]}
@@ -113,20 +210,10 @@ export default function Registration() {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="email"
-                  required
-                  label="E-mail"
-                  rules={[required(), email]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
             </Row>
             <Row gutter={10}>
               <Col span={8}>
-                <Form.Item name="cpf" required label="CPF" rules={[isCPF()]}>
+                <Form.Item name="cpf" required label="CPF" rules={[isCPF]}>
                   <MaskedInput mask="000.000.000-00" />
                 </Form.Item>
               </Col>
@@ -160,7 +247,7 @@ export default function Registration() {
                   name="birthdate"
                   required
                   label="Data de nascimento"
-                  rules={[required()]}
+                  rules={[required({ type: 'date' })]}
                 >
                   <DatePicker
                     placeholder=""
@@ -179,20 +266,35 @@ export default function Registration() {
           <>
             <Row>
               <Col span={6}>
-                <Form.Item name="zipCode" required label="CEP">
+                <Form.Item
+                  name="zipCode"
+                  required
+                  rules={[required(), isCEP]}
+                  label="CEP"
+                >
                   <MaskedInput mask="00000-000" />
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={10}>
               <Col span={18}>
-                <Form.Item name="street" required label="Logradouro">
+                <Form.Item
+                  name="street"
+                  rules={[required()]}
+                  required
+                  label="Logradouro"
+                >
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={6}>
-                <Form.Item name="number" required label="Número">
-                  <Input />
+                <Form.Item
+                  name="number"
+                  rules={[required()]}
+                  required
+                  label="Número"
+                >
+                  <MaskedInput mask="[0][0][0][0][0]" />
                 </Form.Item>
               </Col>
             </Row>
@@ -203,20 +305,35 @@ export default function Registration() {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="district" required label="Bairro">
+                <Form.Item
+                  name="district"
+                  required
+                  rules={[required()]}
+                  label="Bairro"
+                >
                   <Input />
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={10}>
               <Col span={12}>
-                <Form.Item label="Cidade" name="city" required>
+                <Form.Item
+                  label="Cidade"
+                  name="city"
+                  rules={[required()]}
+                  required
+                >
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Estado" name="state" required>
-                  <Input />
+                <Form.Item
+                  label="Estado"
+                  name="state"
+                  rules={[required()]}
+                  required
+                >
+                  <Select options={UFS} />
                 </Form.Item>
               </Col>
             </Row>
@@ -226,22 +343,112 @@ export default function Registration() {
           <>
             <Row gutter={10}>
               <Col span={12}>
-                <Form.Item name="cellphone" required label="Celular">
+                <Form.Item
+                  name="cellphone"
+                  required
+                  rules={[required()]}
+                  label="Celular"
+                >
                   <MaskedInput mask="+55 (00)00000-0000" />
                 </Form.Item>
               </Col>
-              <Col span={24}>
-                <Form.Item name="church" required label="Igreja onde é pastor">
+              <Col span={12}>
+                <Form.Item
+                  name="email"
+                  required
+                  label="E-mail"
+                  rules={[required(), email]}
+                >
                   <Input />
                 </Form.Item>
               </Col>
+            </Row>
+          </>
+        )}
+        {steps[currentStep].title === Step.MINISTRY && (
+          <>
+            <Row>
+              <Col span={24}>
+                <Form.Item
+                  name="church"
+                  required
+                  rules={[required()]}
+                  label="Igreja onde é pastor"
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
               <Col span={24}>
                 <Form.Item
                   name="ordinanceTime"
                   required
                   label="Há quanto tempo é pastor ordenado"
                 >
-                  <Select />
+                  <Select
+                    showSearch
+                    options={MINISTRY_ORDINANCE_TIME}
+                    allowClear
+                    optionFilterProp="label"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <Form.Item
+                  name="letter"
+                  label="Carta de recomendação"
+                  rules={[
+                    required({
+                      type: 'file',
+                    }),
+                  ]}
+                  required
+                >
+                  <Upload.Dragger
+                    accept=".png,.jpeg,.jpg,.pdf"
+                    beforeUpload={handleBeforeUpload}
+                  >
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                    <p className="ant-upload-text">
+                      Clique ou arraste o arquivo nesta área
+                    </p>
+                    <p className="ant-upload-hint">
+                      Apenas os formatos .png, .jpeg, .jpg e .pdf são
+                      permitidos.
+                    </p>
+                  </Upload.Dragger>
+                </Form.Item>
+              </Col>
+            </Row>
+          </>
+        )}
+        {steps[currentStep].title === Step.CREDENTIALS && (
+          <>
+            <Row>
+              <Col span={12}>
+                <Form.Item label="Usuário" name="username" rules={[required()]}>
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={10}>
+              <Col span={12}>
+                <Form.Item label="Senha" name="password" rules={[required()]}>
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Confirmar senha"
+                  name="confirmPassword"
+                  rules={[required(), equalToField('password', 'Senha')]}
+                >
+                  <Input />
                 </Form.Item>
               </Col>
             </Row>
