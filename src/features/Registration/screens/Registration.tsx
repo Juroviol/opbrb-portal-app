@@ -26,9 +26,10 @@ import MaskedInput from '@components/MaskedInput';
 import { omit, range } from 'lodash';
 import { InboxOutlined } from '@ant-design/icons';
 import { RcFile } from 'antd/es/upload/interface';
-import { useMutation } from '@apollo/client';
-import { CREATE_PASTOR } from '../../../querys/pastorQuery.ts';
+import { useMutation, useQuery } from '@apollo/client';
+import { CREATE_PASTOR, GET_PASTOR } from '../../../querys/pastorQuery.ts';
 import dayjs from 'dayjs';
+import Pastor from '../../../models/Pastor.ts';
 
 enum Step {
   PERSONAL_INFORMATION = 'Informações pessoais',
@@ -36,6 +37,7 @@ enum Step {
   CONTACT_INFORMATION = 'Informações de contato',
   MINISTRY = 'Ministério',
   CREDENTIALS = 'Senha',
+  ANALYSING = 'Análise',
 }
 
 type FormFields = {
@@ -97,7 +99,23 @@ export default function Registration() {
   const [currentStep, setCurrentStep] = useState(0);
   const [form] = Form.useForm<FormFields>();
 
-  const [createPastor, { loading }] = useMutation(CREATE_PASTOR);
+  const queryPastor = useQuery<Pastor>(GET_PASTOR, {
+    skip: !localStorage.getItem('id'),
+    variables: {
+      id: localStorage.getItem('id'),
+    },
+  });
+
+  const [createPastor, mutationPastor] = useMutation(CREATE_PASTOR);
+
+  useEffect(() => {
+    if (queryPastor?.data || mutationPastor.data) {
+      if (mutationPastor.data) {
+        localStorage.setItem('id', mutationPastor.data.createPastor._id);
+      }
+      setCurrentStep(5);
+    }
+  }, [queryPastor.data, mutationPastor.data]);
 
   useEffect(() => {
     if (localStorage.getItem(steps[currentStep].title)) {
@@ -149,16 +167,13 @@ export default function Registration() {
           letter: { file },
           birthday,
         } = form.getFieldsValue(true);
-        const payload = {
+        await createPastor({
           variables: {
             ...form.getFieldsValue(true),
             birthday: birthday.format('YYYY-MM-DD'),
             file,
           },
-        };
-        console.log(payload);
-        const { data } = await createPastor(payload);
-        console.log(data);
+        });
       }
     },
     [currentStep, createPastor]
@@ -181,6 +196,9 @@ export default function Registration() {
       {
         title: Step.CREDENTIALS,
       },
+      {
+        title: Step.ANALYSING,
+      },
     ],
     []
   );
@@ -191,14 +209,15 @@ export default function Registration() {
         <img src={LogoEscritoTransparente} height={150} />
         <Divider style={{ margin: 0 }} />
       </Flex>
-      <Flex justify="center" vertical align="center">
-        <Typography.Title level={4}>Formulário de registro</Typography.Title>
-        <Typography.Text>
-          Por favor, preencha as informações obrigatórias de todas as etapas.
-        </Typography.Text>
-      </Flex>
+      {steps[currentStep].title !== Step.ANALYSING && (
+        <Flex justify="center" vertical align="center">
+          <Typography.Title level={4}>Formulário de registro</Typography.Title>
+          <Typography.Text>
+            Por favor, preencha as informações obrigatórias de todas as etapas.
+          </Typography.Text>
+        </Flex>
+      )}
       <Steps
-        size="small"
         current={currentStep}
         labelPlacement="vertical"
         items={steps}
@@ -221,14 +240,14 @@ export default function Registration() {
                   required
                   label="Nome completo"
                 >
-                  <Input />
+                  <Input size="large" />
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={10}>
               <Col span={8}>
                 <Form.Item name="cpf" required label="CPF" rules={[isCPF]}>
-                  <MaskedInput mask="000.000.000-00" />
+                  <MaskedInput size="large" mask="000.000.000-00" />
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -239,6 +258,7 @@ export default function Registration() {
                   rules={[required()]}
                 >
                   <Select
+                    size="large"
                     options={[
                       {
                         label: 'Casado',
@@ -264,6 +284,7 @@ export default function Registration() {
                   rules={[required({ type: 'date' })]}
                 >
                   <DatePicker
+                    size="large"
                     placeholder=""
                     format={{
                       format: 'DD/MM/YYYY',
@@ -286,7 +307,7 @@ export default function Registration() {
                   rules={[required(), isCEP]}
                   label="CEP"
                 >
-                  <MaskedInput mask="00000-000" />
+                  <MaskedInput mask="00000-000" size="large" />
                 </Form.Item>
               </Col>
             </Row>
@@ -298,7 +319,7 @@ export default function Registration() {
                   required
                   label="Logradouro"
                 >
-                  <Input />
+                  <Input size="large" />
                 </Form.Item>
               </Col>
               <Col span={6}>
@@ -308,14 +329,14 @@ export default function Registration() {
                   required
                   label="Número"
                 >
-                  <MaskedInput mask="[0][0][0][0][0]" />
+                  <MaskedInput size="large" mask="[0][0][0][0][0]" />
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={10}>
               <Col span={12}>
                 <Form.Item name="complement" label="Complemento">
-                  <Input placeholder="Apartamento, Bloco" />
+                  <Input size="large" placeholder="Apartamento, Bloco" />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -325,7 +346,7 @@ export default function Registration() {
                   rules={[required()]}
                   label="Bairro"
                 >
-                  <Input />
+                  <Input size="large" />
                 </Form.Item>
               </Col>
             </Row>
@@ -337,7 +358,7 @@ export default function Registration() {
                   rules={[required()]}
                   required
                 >
-                  <Input />
+                  <Input size="large" />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -347,7 +368,7 @@ export default function Registration() {
                   rules={[required()]}
                   required
                 >
-                  <Select options={UFS} />
+                  <Select size="large" options={UFS} />
                 </Form.Item>
               </Col>
             </Row>
@@ -363,7 +384,7 @@ export default function Registration() {
                   rules={[required()]}
                   label="Celular"
                 >
-                  <MaskedInput mask="+55 (00)00000-0000" />
+                  <MaskedInput size="large" mask="+55 (00)00000-0000" />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -373,7 +394,7 @@ export default function Registration() {
                   label="E-mail"
                   rules={[required(), email]}
                 >
-                  <Input />
+                  <Input size="large" />
                 </Form.Item>
               </Col>
             </Row>
@@ -389,7 +410,7 @@ export default function Registration() {
                   rules={[required()]}
                   label="Igreja onde é pastor"
                 >
-                  <Input />
+                  <Input size="large" />
                 </Form.Item>
               </Col>
             </Row>
@@ -401,6 +422,7 @@ export default function Registration() {
                   label="Há quanto tempo é pastor ordenado"
                 >
                   <Select
+                    size="large"
                     showSearch
                     options={MINISTRY_ORDINANCE_TIME}
                     allowClear
@@ -461,16 +483,38 @@ export default function Registration() {
             </Row>
           </>
         )}
-        <Flex justify="center" style={{ marginTop: 20 }}>
-          <Button
-            htmlType="submit"
-            type="primary"
-            size="large"
-            loading={loading}
-          >
-            {currentStep !== steps.length - 1 ? 'Avançar' : 'Concluir'}
-          </Button>
-        </Flex>
+        {steps[currentStep].title === Step.ANALYSING && (
+          <>
+            <Typography.Title level={4}>
+              Seu cadastro foi enviado!
+            </Typography.Title>
+            <Typography.Paragraph>
+              Agradecemos por preencher o formulário. Seus dados serão
+              analisados pela nossa equipe, e entraremos em contato assim que a
+              avaliação for concluída.
+            </Typography.Paragraph>
+            <Typography.Paragraph>
+              Se tiver alguma dúvida,{' '}
+              <a href="https://wa.me/5541966666755" target="_blank">
+                entre em contato conosco
+              </a>
+              .
+            </Typography.Paragraph>
+            <Typography.Paragraph>Deus abençoe!</Typography.Paragraph>
+          </>
+        )}
+        {steps[currentStep].title !== Step.ANALYSING && (
+          <Flex justify="center" style={{ marginTop: 20 }}>
+            <Button
+              htmlType="submit"
+              type="primary"
+              size="large"
+              loading={mutationPastor.loading}
+            >
+              {currentStep !== steps.length - 1 ? 'Avançar' : 'Concluir'}
+            </Button>
+          </Flex>
+        )}
       </Form>
     </Card>
   );

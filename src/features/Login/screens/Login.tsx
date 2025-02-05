@@ -37,13 +37,12 @@ export default function Login() {
         </Form.Item>
         <Flex
           style={{ width: '100%', marginTop: 10, marginBottom: 30 }}
-          justify="space-between"
+          justify="flex-start"
           align="center"
         >
           <Form.Item name="rememberMe" noStyle>
             <Checkbox>Manter-me conectado</Checkbox>
           </Form.Item>
-          <Typography.Link>Esqueci minha senha</Typography.Link>
         </Flex>
         <Button
           htmlType="submit"

@@ -1,5 +1,13 @@
 import { gql } from '@apollo/client';
 
+export const GET_PASTOR = gql`
+  query GetPastor($id: ID!) {
+    getPastor(id: $id) {
+      _id
+    }
+  }
+`;
+
 export const CREATE_PASTOR = gql`
   mutation CreatePastor(
     $file: Upload!
