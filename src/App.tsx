@@ -15,7 +15,7 @@ function App() {
       <Flex
         style={{
           width: '100%',
-          height: '100%',
+          minHeight: '100vh',
           backgroundColor: 'rgb(244, 233, 232)',
         }}
         justify="center"
@@ -31,7 +31,7 @@ function App() {
   }
 
   return (
-    <Layout style={{ height: '100vh' }}>
+    <Layout style={{ minHeight: '100vh' }}>
       <Layout.Sider collapsible>
         <Flex
           vertical

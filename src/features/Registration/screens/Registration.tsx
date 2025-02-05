@@ -26,13 +26,16 @@ import MaskedInput from '@components/MaskedInput';
 import { omit, range } from 'lodash';
 import { InboxOutlined } from '@ant-design/icons';
 import { RcFile } from 'antd/es/upload/interface';
+import { useMutation } from '@apollo/client';
+import { CREATE_PASTOR } from '../../../querys/pastorQuery.ts';
+import dayjs from 'dayjs';
 
 enum Step {
   PERSONAL_INFORMATION = 'Informações pessoais',
   ADDRESS = 'Endereço',
   CONTACT_INFORMATION = 'Informações de contato',
   MINISTRY = 'Ministério',
-  CREDENTIALS = 'Usuário e Senha',
+  CREDENTIALS = 'Senha',
 }
 
 type FormFields = {
@@ -94,23 +97,21 @@ export default function Registration() {
   const [currentStep, setCurrentStep] = useState(0);
   const [form] = Form.useForm<FormFields>();
 
-  useEffect(() => {
-    let step = currentStep;
-    for (let i = 0; i < localStorage.length - 1; i++) {
-      if (Object.values(Step).includes(localStorage.key(i) as Step)) {
-        step++;
-        form.setFieldsValue(
-          JSON.parse(
-            localStorage.getItem(localStorage.key(i) as string) as string
-          )
-        );
-      }
-    }
-    setCurrentStep(step);
-  }, []);
+  const [createPastor, { loading }] = useMutation(CREATE_PASTOR);
 
-  const handleBeforeUpload = useCallback((file: RcFile) => {
-    form.setFieldValue('letter', file);
+  useEffect(() => {
+    if (localStorage.getItem(steps[currentStep].title)) {
+      const values = JSON.parse(
+        localStorage.getItem(steps[currentStep].title) as string
+      );
+      if (values.birthday) {
+        values.birthday = dayjs(values.birthday);
+      }
+      form.setFieldsValue(values);
+    }
+  }, [currentStep]);
+
+  const handleBeforeUpload = useCallback(() => {
     return false;
   }, []);
 
@@ -136,7 +137,7 @@ export default function Registration() {
   );
 
   const handleFinish = useCallback(
-    (values: object) => {
+    async (values: object) => {
       localStorage.setItem(
         steps[currentStep].title,
         JSON.stringify(omit(values, 'letter'))
@@ -144,10 +145,23 @@ export default function Registration() {
       if (steps[currentStep].title !== Step.CREDENTIALS) {
         setCurrentStep(currentStep + 1);
       } else {
-        console.log(values);
+        const {
+          letter: { file },
+          birthday,
+        } = form.getFieldsValue(true);
+        const payload = {
+          variables: {
+            ...form.getFieldsValue(true),
+            birthday: birthday.format('YYYY-MM-DD'),
+            file,
+          },
+        };
+        console.log(payload);
+        const { data } = await createPastor(payload);
+        console.log(data);
       }
     },
-    [currentStep]
+    [currentStep, createPastor]
   );
 
   const steps = useMemo(
@@ -172,7 +186,7 @@ export default function Registration() {
   );
 
   return (
-    <Card style={{ width: 700 }}>
+    <Card style={{ width: 700, marginBlock: 20 }}>
       <Flex vertical style={{ width: '100%' }} justify="center" align="center">
         <img src={LogoEscritoTransparente} height={150} />
         <Divider style={{ margin: 0 }} />
@@ -228,15 +242,15 @@ export default function Registration() {
                     options={[
                       {
                         label: 'Casado',
-                        value: 'casado',
+                        value: 'Married',
                       },
                       {
                         label: 'Solteiro',
-                        value: 'solteiro',
+                        value: 'Single',
                       },
                       {
                         label: 'Viúvo',
-                        value: 'viuvo',
+                        value: 'Widower',
                       },
                     ]}
                   />
@@ -244,7 +258,7 @@ export default function Registration() {
               </Col>
               <Col span={8}>
                 <Form.Item
-                  name="birthdate"
+                  name="birthday"
                   required
                   label="Data de nascimento"
                   rules={[required({ type: 'date' })]}
@@ -344,7 +358,7 @@ export default function Registration() {
             <Row gutter={10}>
               <Col span={12}>
                 <Form.Item
-                  name="cellphone"
+                  name="cellPhone"
                   required
                   rules={[required()]}
                   label="Celular"
@@ -429,13 +443,6 @@ export default function Registration() {
         )}
         {steps[currentStep].title === Step.CREDENTIALS && (
           <>
-            <Row>
-              <Col span={12}>
-                <Form.Item label="Usuário" name="username" rules={[required()]}>
-                  <Input />
-                </Form.Item>
-              </Col>
-            </Row>
             <Row gutter={10}>
               <Col span={12}>
                 <Form.Item label="Senha" name="password" rules={[required()]}>
@@ -455,7 +462,12 @@ export default function Registration() {
           </>
         )}
         <Flex justify="center" style={{ marginTop: 20 }}>
-          <Button htmlType="submit" type="primary" size="large">
+          <Button
+            htmlType="submit"
+            type="primary"
+            size="large"
+            loading={loading}
+          >
             {currentStep !== steps.length - 1 ? 'Avançar' : 'Concluir'}
           </Button>
         </Flex>

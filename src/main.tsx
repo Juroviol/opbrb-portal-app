@@ -7,6 +7,17 @@ import AuthContextProvider from './contexts/AuthContext.tsx';
 import { BrowserRouter } from 'react-router-dom';
 import locale from 'antd/locale/pt_BR';
 import dayjs from 'dayjs';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
+
+const uploadLink = createUploadLink({
+  uri: `${import.meta.env.VITE_APP_SERVER_URI}/graphql`,
+});
+
+const client = new ApolloClient({
+  link: uploadLink,
+  cache: new InMemoryCache(),
+});
 
 import 'dayjs/locale/pt-br';
 
@@ -52,7 +63,9 @@ createRoot(document.getElementById('root')!).render(
     >
       <AuthContextProvider>
         <BrowserRouter>
-          <App />
+          <ApolloProvider client={client}>
+            <App />
+          </ApolloProvider>
         </BrowserRouter>
       </AuthContextProvider>
     </ConfigProvider>
