@@ -9,6 +9,7 @@ import Registration from '@features/Registration/screens/Registration.tsx';
 import Profile from '@features/Profile/screens/Profile.tsx';
 import Pastors from '@features/Pastors/screens/Pastors.tsx';
 import PastorDetail from '@features/PastorDetail/screens/PastorDetail.tsx';
+import { Role } from './models/User.ts';
 
 function App() {
   const { user } = useAuth();
@@ -28,6 +29,7 @@ function App() {
           <Route path="" element={<RedirectRoute to="/login" />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registration />} />
+          <Route path="*" element={<RedirectRoute to="/login" />} />
         </Routes>
       </Flex>
     );
@@ -49,25 +51,33 @@ function App() {
           <Divider style={{ margin: '5px 0' }} />
         </Flex>
         <Menu
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={['pastores']}
           mode="inline"
           style={{ height: '100%' }}
           items={[
-            {
-              label: <Link to="/pastores">Pastores</Link>,
-              key: 'pastors',
-              icon: <UserOutlined />,
-            },
+            ...(Role.ADMIN === user.role
+              ? [
+                  {
+                    label: <Link to="/pastores">Pastores</Link>,
+                    key: 'pastores',
+                    icon: <UserOutlined />,
+                  },
+                ]
+              : []),
           ]}
         />
       </Layout.Sider>
       <Layout>
-        <Layout.Header />
         <Layout.Content style={{ margin: 16 }}>
           <Routes>
             <Route path="/conta" element={<Profile />} />
-            <Route path="/pastores" element={<Pastors />} />
-            <Route path="/pastor/:id" element={<PastorDetail />} />
+            {Role.ADMIN === user.role && (
+              <>
+                <Route path="" element={<RedirectRoute to="/pastores" />} />
+                <Route path="/pastores" element={<Pastors />} />
+                <Route path="/pastor/:id" element={<PastorDetail />} />
+              </>
+            )}
           </Routes>
         </Layout.Content>
       </Layout>

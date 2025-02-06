@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import User, { Role } from '../models/User.ts';
+import User from '../models/User.ts';
 import { useLazyQuery } from '@apollo/client';
 import { GET_LOGGED_USER } from '../querys/userQuery.ts';
 import { useNavigate } from 'react-router-dom';
@@ -36,11 +36,7 @@ export default function AuthContextProvider({
       const { data } = await getLoggedUser();
       if (data?.getLoggedUser) {
         setUser(data?.getLoggedUser);
-        if (data.getLoggedUser.role === Role.ADMIN) {
-          navigate('/');
-        } else {
-          navigate('/profile');
-        }
+        navigate('/');
       }
     }
   }, []);
