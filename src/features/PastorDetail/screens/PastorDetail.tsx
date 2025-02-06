@@ -92,19 +92,23 @@ function PastorDetail() {
           ),
           span: 2,
         },
-        {
-          key: 'recommendationLetter',
-          label: 'Comprovante de pagamento anual',
-          children: (
-            <Button
-              icon={<DownloadOutlined />}
-              onClick={() =>
-                handleDownload(data?.getPastor.paymentConfirmationUrl)
-              }
-            />
-          ),
-          span: 2,
-        },
+        ...(data.getPastor.paymentConfirmationUrl
+          ? [
+              {
+                key: 'recommendationLetter',
+                label: 'Comprovante de pagamento anual',
+                children: (
+                  <Button
+                    icon={<DownloadOutlined />}
+                    onClick={() =>
+                      handleDownload(data?.getPastor.paymentConfirmationUrl)
+                    }
+                  />
+                ),
+                span: 2,
+              },
+            ]
+          : []),
       ];
     }
     return [];

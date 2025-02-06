@@ -164,17 +164,15 @@ export default function Registration() {
       if (steps[currentStep].title !== Step.CREDENTIALS) {
         setCurrentStep(currentStep + 1);
       } else {
-        const {
-          letter: { file: fileLetter },
-          paymentConfirmation: { file: filePaymentConfirmation },
-          birthday,
-        } = form.getFieldsValue(true);
+        const allFormValues = form.getFieldsValue(true);
         await createPastor({
           variables: {
             ...form.getFieldsValue(true),
-            birthday: birthday.format('YYYY-MM-DD'),
-            fileLetter,
-            filePaymentConfirmation,
+            birthday: allFormValues.birthday.format('YYYY-MM-DD'),
+            fileLetter: allFormValues.letter.file,
+            ...(allFormValues.paymentConfirmation && {
+              filePaymentConfirmation: allFormValues.paymentConfirmation.file,
+            }),
           },
         });
       }
@@ -422,6 +420,11 @@ export default function Registration() {
                 <Form.Item
                   name="ordinanceTime"
                   required
+                  rules={[
+                    required({
+                      type: 'number',
+                    }),
+                  ]}
                   label="Há quanto tempo é pastor ordenado"
                 >
                   <Select
@@ -462,12 +465,6 @@ export default function Registration() {
                 <Form.Item
                   name="paymentConfirmation"
                   label="Comprovante de pagamento anual"
-                  rules={[
-                    required({
-                      type: 'file',
-                    }),
-                  ]}
-                  required
                 >
                   <Upload
                     multiple={false}
@@ -489,7 +486,7 @@ export default function Registration() {
             <Row gutter={10}>
               <Col span={12}>
                 <Form.Item label="Senha" name="password" rules={[required()]}>
-                  <Input />
+                  <Input.Password />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -498,7 +495,7 @@ export default function Registration() {
                   name="confirmPassword"
                   rules={[required(), equalToField('password', 'Senha')]}
                 >
-                  <Input />
+                  <Input.Password />
                 </Form.Item>
               </Col>
             </Row>
