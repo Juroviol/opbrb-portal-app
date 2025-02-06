@@ -36,13 +36,15 @@ export const GET_PASTOR = gql`
       ordinanceTime
       status
       recommendationLetterUrl
+      paymentConfirmationUrl
     }
   }
 `;
 
 export const CREATE_PASTOR = gql`
   mutation CreatePastor(
-    $file: Upload!
+    $fileLetter: Upload!
+    $filePaymentConfirmation: Upload!
     $name: String!
     $cpf: String!
     $email: String!
@@ -60,7 +62,8 @@ export const CREATE_PASTOR = gql`
     $ordinanceTime: Int!
   ) {
     createPastor(
-      file: $file
+      fileLetter: $fileLetter
+      filePaymentConfirmation: $filePaymentConfirmation
       name: $name
       cpf: $cpf
       email: $email

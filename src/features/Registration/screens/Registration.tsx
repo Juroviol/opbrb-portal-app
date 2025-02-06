@@ -24,7 +24,7 @@ import {
 } from '../../../validators.ts';
 import MaskedInput from '@components/MaskedInput';
 import { omit, range } from 'lodash';
-import { InboxOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 import { RcFile } from 'antd/es/upload/interface';
 import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_PASTOR, GET_PASTOR } from '../../../querys/pastorQuery.ts';
@@ -52,6 +52,7 @@ type FormFields = {
   number: string;
   district: string;
   letter: RcFile;
+  paymentConfirmation: RcFile;
 };
 
 const UFS = [
@@ -158,20 +159,22 @@ export default function Registration() {
     async (values: object) => {
       localStorage.setItem(
         steps[currentStep].title,
-        JSON.stringify(omit(values, 'letter'))
+        JSON.stringify(omit(values, ['letter', 'paymentConfirmation']))
       );
       if (steps[currentStep].title !== Step.CREDENTIALS) {
         setCurrentStep(currentStep + 1);
       } else {
         const {
-          letter: { file },
+          letter: { file: fileLetter },
+          paymentConfirmation: { file: filePaymentConfirmation },
           birthday,
         } = form.getFieldsValue(true);
         await createPastor({
           variables: {
             ...form.getFieldsValue(true),
             birthday: birthday.format('YYYY-MM-DD'),
-            file,
+            fileLetter,
+            filePaymentConfirmation,
           },
         });
       }
@@ -432,10 +435,10 @@ export default function Registration() {
               </Col>
             </Row>
             <Row>
-              <Col span={24}>
+              <Col span={12}>
                 <Form.Item
                   name="letter"
-                  label="Carta de recomendação"
+                  label="Carta de recomendação da Igreja"
                   rules={[
                     required({
                       type: 'file',
@@ -443,21 +446,39 @@ export default function Registration() {
                   ]}
                   required
                 >
-                  <Upload.Dragger
+                  <Upload
+                    multiple={false}
+                    maxCount={1}
                     accept=".png,.jpeg,.jpg,.pdf"
                     beforeUpload={handleBeforeUpload}
                   >
-                    <p className="ant-upload-drag-icon">
-                      <InboxOutlined />
-                    </p>
-                    <p className="ant-upload-text">
-                      Clique ou arraste o arquivo nesta área
-                    </p>
-                    <p className="ant-upload-hint">
-                      Apenas os formatos .png, .jpeg, .jpg e .pdf são
-                      permitidos.
-                    </p>
-                  </Upload.Dragger>
+                    <Button icon={<UploadOutlined />}>
+                      Escolher o arquivo
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="paymentConfirmation"
+                  label="Comprovante de pagamento anual"
+                  rules={[
+                    required({
+                      type: 'file',
+                    }),
+                  ]}
+                  required
+                >
+                  <Upload
+                    multiple={false}
+                    maxCount={1}
+                    accept=".png,.jpeg,.jpg,.pdf"
+                    beforeUpload={handleBeforeUpload}
+                  >
+                    <Button icon={<UploadOutlined />}>
+                      Escolher o arquivo
+                    </Button>
+                  </Upload>
                 </Form.Item>
               </Col>
             </Row>
