@@ -6,6 +6,11 @@ export enum MaritalStatus {
   Widower = 'Viúvo',
 }
 
+export enum Status {
+  APPROVED = 'Aprovado',
+  ANALYSING = 'Em análise',
+}
+
 export default interface Pastor extends User {
   cpf: string;
   maritalStatus: MaritalStatus;
@@ -17,5 +22,9 @@ export default interface Pastor extends User {
   district: string;
   zipCode: string;
   cellPhone: string;
+  church: string;
+  ordinanceTime: number;
   recommendationLetterUrl: string;
+  createdAt: string;
+  status: Status;
 }

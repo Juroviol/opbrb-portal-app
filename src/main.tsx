@@ -9,13 +9,28 @@ import locale from 'antd/locale/pt_BR';
 import dayjs from 'dayjs';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
+import { setContext } from '@apollo/client/link/context';
+import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev';
+
+loadDevMessages();
+loadErrorMessages();
 
 const uploadLink = createUploadLink({
   uri: `${import.meta.env.VITE_APP_SERVER_URI}/graphql`,
 });
 
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('accessToken');
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
+
 const client = new ApolloClient({
-  link: uploadLink,
+  link: authLink.concat(uploadLink),
   cache: new InMemoryCache(),
 });
 
@@ -61,13 +76,13 @@ createRoot(document.getElementById('root')!).render(
         },
       }}
     >
-      <AuthContextProvider>
-        <BrowserRouter>
-          <ApolloProvider client={client}>
+      <BrowserRouter>
+        <ApolloProvider client={client}>
+          <AuthContextProvider>
             <App />
-          </ApolloProvider>
-        </BrowserRouter>
-      </AuthContextProvider>
+          </AuthContextProvider>
+        </ApolloProvider>
+      </BrowserRouter>
     </ConfigProvider>
   </StrictMode>
 );

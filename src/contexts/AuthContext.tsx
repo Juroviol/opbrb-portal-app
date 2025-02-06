@@ -1,12 +1,23 @@
-import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
-import User from '../models/User.ts';
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import User, { Role } from '../models/User.ts';
+import { useLazyQuery } from '@apollo/client';
+import { GET_LOGGED_USER } from '../querys/userQuery.ts';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext<{
   user: User | null;
-  setUser: (user: User) => void;
+  handleLoginData: () => void;
 }>({
   user: null,
-  setUser: () => false,
+  handleLoginData: () => false,
 });
 
 export default function AuthContextProvider({
@@ -14,14 +25,39 @@ export default function AuthContextProvider({
 }: {
   children: ReactNode;
 }) {
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
+  const [getLoggedUser] = useLazyQuery<{ getLoggedUser: User }>(
+    GET_LOGGED_USER
+  );
+
+  const handleLoginData = useCallback(async () => {
+    if (localStorage.getItem('accessToken')) {
+      const { data } = await getLoggedUser();
+      if (data?.getLoggedUser) {
+        setUser(data?.getLoggedUser);
+        if (data.getLoggedUser.role === Role.ADMIN) {
+          navigate('/');
+        } else {
+          navigate('/profile');
+        }
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem('accessToken')) {
+      handleLoginData();
+    }
+  }, []);
 
   const providerValue = useMemo(() => {
     return {
       user,
-      setUser,
+      handleLoginData,
     };
   }, [user]);
+
   return (
     <AuthContext.Provider value={providerValue}>
       {children}

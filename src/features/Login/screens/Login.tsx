@@ -11,9 +11,29 @@ import {
 import LogoEscritoTransparente from '@assets/logo_escrito_transparente.png';
 import { useNavigate } from 'react-router-dom';
 import { required } from '../../../validators.ts';
+import { useMutation } from '@apollo/client';
+import { AUTHENTICATE } from '../../../querys/userQuery.ts';
+import { useCallback } from 'react';
+import { useAuth } from '../../../contexts/AuthContext.tsx';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { handleLoginData } = useAuth();
+
+  const [authenticate, { loading }] = useMutation<{
+    authenticate: { token: string };
+  }>(AUTHENTICATE);
+
+  const handleOnFinish = useCallback(async (values: object) => {
+    const { data } = await authenticate({
+      variables: values,
+    });
+    if (data) {
+      localStorage.setItem('accessToken', data?.authenticate.token);
+      handleLoginData();
+    }
+  }, []);
+
   return (
     <Card>
       <Flex
@@ -28,7 +48,7 @@ export default function Login() {
           Por favor, insira seus dados abaixo para acessar o portal.
         </Typography.Text>
       </Flex>
-      <Form layout="vertical">
+      <Form layout="vertical" onFinish={handleOnFinish}>
         <Form.Item name="username" label="Usuário" rules={[required()]}>
           <Input placeholder="CPF ou E-mail" size="large" />
         </Form.Item>
@@ -49,6 +69,7 @@ export default function Login() {
           type="primary"
           size="large"
           style={{ width: '100%' }}
+          loading={loading}
         >
           Entrar
         </Button>

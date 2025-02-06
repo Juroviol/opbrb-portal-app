@@ -2,10 +2,13 @@ import { Divider, Flex, Layout, Menu } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import LogoTransparent from '@assets/logo_transparente.png';
 import { useAuth } from './contexts/AuthContext.tsx';
-import { Route, Routes } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
 import Login from '@features/Login/screens/Login.tsx';
 import RedirectRoute from './components/RedirectRoute.tsx';
 import Registration from '@features/Registration/screens/Registration.tsx';
+import Profile from '@features/Profile/screens/Profile.tsx';
+import Pastors from '@features/Pastors/screens/Pastors.tsx';
+import PastorDetail from '@features/PastorDetail/screens/PastorDetail.tsx';
 
 function App() {
   const { user } = useAuth();
@@ -42,7 +45,7 @@ function App() {
             alignItems: 'center',
           }}
         >
-          <img src={LogoTransparent} style={{ height: 100 }} />
+          <img src={LogoTransparent} style={{ height: 70 }} />
           <Divider style={{ margin: '5px 0' }} />
         </Flex>
         <Menu
@@ -50,13 +53,23 @@ function App() {
           mode="inline"
           style={{ height: '100%' }}
           items={[
-            { label: 'Registros', key: 'registros', icon: <UserOutlined /> },
+            {
+              label: <Link to="/pastores">Pastores</Link>,
+              key: 'pastors',
+              icon: <UserOutlined />,
+            },
           ]}
         />
       </Layout.Sider>
       <Layout>
         <Layout.Header />
-        <Layout.Content style={{ margin: 16 }} />
+        <Layout.Content style={{ margin: 16 }}>
+          <Routes>
+            <Route path="/conta" element={<Profile />} />
+            <Route path="/pastores" element={<Pastors />} />
+            <Route path="/pastor/:id" element={<PastorDetail />} />
+          </Routes>
+        </Layout.Content>
       </Layout>
     </Layout>
   );
