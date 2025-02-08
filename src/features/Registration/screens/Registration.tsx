@@ -169,7 +169,9 @@ export default function Registration() {
           variables: {
             ...form.getFieldsValue(true),
             birthday: allFormValues.birthday.format('YYYY-MM-DD'),
-            fileLetter: allFormValues.letter.file,
+            ...(allFormValues.letter && {
+              fileLetter: allFormValues.letter.file,
+            }),
             ...(allFormValues.paymentConfirmation && {
               filePaymentConfirmation: allFormValues.paymentConfirmation.file,
             }),
@@ -442,12 +444,6 @@ export default function Registration() {
                 <Form.Item
                   name="letter"
                   label="Carta de recomendação da Igreja"
-                  rules={[
-                    required({
-                      type: 'file',
-                    }),
-                  ]}
-                  required
                 >
                   <Upload
                     multiple={false}

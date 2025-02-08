@@ -43,7 +43,7 @@ export const GET_PASTOR = gql`
 
 export const CREATE_PASTOR = gql`
   mutation CreatePastor(
-    $fileLetter: Upload!
+    $fileLetter: Upload
     $filePaymentConfirmation: Upload
     $name: String!
     $cpf: String!

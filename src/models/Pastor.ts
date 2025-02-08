@@ -24,8 +24,8 @@ export default interface Pastor extends User {
   cellPhone: string;
   church: string;
   ordinanceTime: number;
-  recommendationLetterUrl: string;
-  paymentConfirmationUrl: string;
+  recommendationLetterUrl?: string;
+  paymentConfirmationUrl?: string;
   createdAt: string;
   status: Status;
 }
