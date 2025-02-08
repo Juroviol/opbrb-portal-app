@@ -4,7 +4,7 @@ import { Button, Flex, Table, Tag } from 'antd';
 import Pastor, { Status } from '../../../models/Pastor.ts';
 import { useCallback, useState } from 'react';
 import dayjs from 'dayjs';
-import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import { EyeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 function Pastors() {
@@ -82,8 +82,6 @@ function Pastors() {
                     icon={<EyeOutlined />}
                     onClick={() => handleOnDetail(_id)}
                   />
-                  <Button icon={<EditOutlined />} />
-                  <Button icon={<DeleteOutlined />} danger />
                 </Flex>
               );
             },
