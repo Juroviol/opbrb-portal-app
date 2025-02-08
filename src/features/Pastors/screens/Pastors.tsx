@@ -6,8 +6,11 @@ import { useCallback, useState } from 'react';
 import dayjs from 'dayjs';
 import { EyeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../contexts/AuthContext.tsx';
+import { Scope } from '../../../models/User.ts';
 
 function Pastors() {
+  const { hasPermission } = useAuth();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [size, setSize] = useState(15);
@@ -78,10 +81,12 @@ function Pastors() {
             render(_id) {
               return (
                 <Flex gap={5}>
-                  <Button
-                    icon={<EyeOutlined />}
-                    onClick={() => handleOnDetail(_id)}
-                  />
+                  {hasPermission(Scope.CanDetailPastor) && (
+                    <Button
+                      icon={<EyeOutlined />}
+                      onClick={() => handleOnDetail(_id)}
+                    />
+                  )}
                 </Flex>
               );
             },

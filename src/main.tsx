@@ -55,7 +55,6 @@ createRoot(document.getElementById('root')!).render(
         },
         components: {
           Menu: {
-            itemBorderRadius: 0,
             dangerItemActiveBg: 'rgb(255,242,240)',
             itemSelectedBg: 'rgb(244,233,232)',
             subMenuItemBg: 'rgba(0,0,0,0.01)',
@@ -63,8 +62,9 @@ createRoot(document.getElementById('root')!).render(
             itemActiveBg: 'rgba(0,0,0,0)',
           },
           Layout: {
-            headerBg: '#1f1B1cff',
-            triggerBg: '#1f1B1cff',
+            headerBg: 'white',
+            triggerBg: 'white',
+            triggerColor: '#1f1b1c',
           },
           Input: {
             activeShadow: '0 0 0 2px rgba(197,112,115, 0.2)',
@@ -72,6 +72,12 @@ createRoot(document.getElementById('root')!).render(
           Select: {
             optionSelectedBg: 'rgb(123,8,8)',
             optionSelectedColor: 'rgba(255,255,255,0.88)',
+          },
+          Dropdown: {
+            controlItemBgHover: 'rgba(0,0,0,0.02)',
+          },
+          Table: {
+            cellPaddingBlock: 10,
           },
         },
       }}

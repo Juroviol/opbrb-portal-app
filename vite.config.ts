@@ -11,6 +11,7 @@ export default defineConfig({
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@features': path.resolve(__dirname, 'src/features'),
       '@components': path.resolve(__dirname, 'src/components'),
+      '@consts': path.resolve(__dirname, 'src/consts/index.ts'),
     },
   },
 });

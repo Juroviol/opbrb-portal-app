@@ -41,6 +41,48 @@ export const GET_PASTOR = gql`
   }
 `;
 
+export const GET_PASTOR_PERSONAL_INFO = gql`
+  query GetPastor($id: ID!) {
+    getPastor(id: $id) {
+      name
+      cpf
+      birthday
+      maritalStatus
+    }
+  }
+`;
+
+export const GET_PASTOR_ADDRESS_INFO = gql`
+  query GetPastor($id: ID!) {
+    getPastor(id: $id) {
+      street
+      number
+      city
+      state
+      district
+      zipCode
+    }
+  }
+`;
+
+export const GET_PASTOR_CONTACT_INFO = gql`
+  query GetPastor($id: ID!) {
+    getPastor(id: $id) {
+      cellPhone
+      email
+    }
+  }
+`;
+
+export const GET_PASTOR_MINISTRY_INFO = gql`
+  query GetPastor($id: ID!) {
+    getPastor(id: $id) {
+      church
+      ordinanceTime
+    }
+  }
+`;
+
 export const CREATE_PASTOR = gql`
   mutation CreatePastor(
     $fileLetter: Upload

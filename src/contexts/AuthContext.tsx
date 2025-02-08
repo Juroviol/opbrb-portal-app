@@ -7,17 +7,21 @@ import {
   useMemo,
   useState,
 } from 'react';
-import User from '../models/User.ts';
+import User, { Scope } from '../models/User.ts';
 import { useLazyQuery } from '@apollo/client';
 import { GET_LOGGED_USER } from '../querys/userQuery.ts';
 import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext<{
   user: User | null;
+  hasPermission: (scope: Scope) => boolean;
   handleLoginData: () => void;
+  logout: () => void;
 }>({
   user: null,
   handleLoginData: () => false,
+  hasPermission: () => false,
+  logout: () => false,
 });
 
 export default function AuthContextProvider({
@@ -41,6 +45,17 @@ export default function AuthContextProvider({
     }
   }, []);
 
+  const hasPermission = useCallback(
+    (scope: Scope) => !!user?.scopes.includes(scope),
+    [user]
+  );
+
+  const logout = useCallback(() => {
+    localStorage.removeItem('accessToken');
+    setUser(null);
+    navigate('/login');
+  }, []);
+
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
       handleLoginData();
@@ -51,6 +66,8 @@ export default function AuthContextProvider({
     return {
       user,
       handleLoginData,
+      hasPermission,
+      logout,
     };
   }, [user]);
 

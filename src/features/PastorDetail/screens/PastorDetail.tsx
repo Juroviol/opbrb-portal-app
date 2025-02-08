@@ -14,8 +14,11 @@ import Pastor, { Status } from '../../../models/Pastor.ts';
 import dayjs from 'dayjs';
 import { DownloadOutlined } from '@ant-design/icons';
 import { useCallback, useMemo } from 'react';
+import { useAuth } from '../../../contexts/AuthContext.tsx';
+import { Scope } from '../../../models/User.ts';
 
 function PastorDetail() {
+  const { hasPermission } = useAuth();
   const params = useParams();
   const { loading, data } = useQuery<{ getPastor: Pastor }>(GET_PASTOR, {
     variables: {
@@ -76,32 +79,45 @@ function PastorDetail() {
         {
           key: 'ordinanceTime',
           label: 'Ordenado há',
-          children: data?.getPastor.ordinanceTime,
+          children:
+            data?.getPastor.ordinanceTime > 12
+              ? `${data?.getPastor.ordinanceTime / 12} ${
+                  data?.getPastor.ordinanceTime / 12 > 1 ? 'anos' : 'ano'
+                }`
+              : `${data.getPastor.ordinanceTime} ${
+                  data.getPastor.ordinanceTime > 1 ? 'meses' : 'mês'
+                }`,
           span: 3,
         },
-        {
-          key: 'recommendationLetter',
-          label: 'Carta de recomendação',
-          children: (
-            <Button
-              icon={<DownloadOutlined />}
-              onClick={() =>
-                handleDownload(data?.getPastor.recommendationLetterUrl)
-              }
-            />
-          ),
-          span: 2,
-        },
-        ...(data.getPastor.paymentConfirmationUrl
+        ...(hasPermission(Scope.CanDownloadPastorRecommendationLetter) &&
+        data.getPastor.recommendationLetterUrl
           ? [
               {
                 key: 'recommendationLetter',
+                label: 'Carta de recomendação',
+                children: (
+                  <Button
+                    icon={<DownloadOutlined />}
+                    onClick={() =>
+                      handleDownload(data.getPastor.recommendationLetterUrl!)
+                    }
+                  />
+                ),
+                span: 2,
+              },
+            ]
+          : []),
+        ...(hasPermission(Scope.CanDownloadPastorPaymentConfirmation) &&
+        data.getPastor.paymentConfirmationUrl
+          ? [
+              {
+                key: 'paymentConfirmation',
                 label: 'Comprovante de pagamento anual',
                 children: (
                   <Button
                     icon={<DownloadOutlined />}
                     onClick={() =>
-                      handleDownload(data?.getPastor.paymentConfirmationUrl)
+                      handleDownload(data.getPastor.paymentConfirmationUrl!)
                     }
                   />
                 ),
