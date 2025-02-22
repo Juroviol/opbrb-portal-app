@@ -26,11 +26,22 @@ import Address from '@features/Profile/screens/Address.tsx';
 import ContactInformation from '@features/Profile/screens/ContactInformation.tsx';
 import Ministry from '@features/Profile/screens/Ministry.tsx';
 import Credentials from '@features/Profile/screens/Credentials.tsx';
+import { useCallback, useState } from 'react';
+import { debounce, throttle } from 'lodash';
 
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [collapsed, setCollapsed] = useState(true);
   const { user, hasPermission, logout } = useAuth();
+
+  const onMouseOver = useCallback(() => {
+    if (collapsed) setCollapsed(false);
+  }, [collapsed]);
+
+  const onMouseLeave = useCallback(() => {
+    if (!collapsed) setCollapsed(true);
+  }, [collapsed]);
 
   if (!user) {
     return (
@@ -53,11 +64,14 @@ function App() {
     );
   }
 
-  console.log(location.pathname);
-
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Layout.Sider collapsible defaultCollapsed>
+      <Layout.Sider
+        collapsed={collapsed}
+        defaultCollapsed
+        onMouseOver={throttle(debounce(onMouseOver, 100), 200)}
+        onMouseLeave={throttle(debounce(onMouseLeave, 100), 200)}
+      >
         <Flex
           vertical
           style={{
@@ -98,7 +112,7 @@ function App() {
           ]}
         />
       </Layout.Sider>
-      <Layout>
+      <Layout onMouseOver={throttle(debounce(onMouseLeave, 100), 200)}>
         <Layout.Header
           style={{
             paddingInline: 16,
