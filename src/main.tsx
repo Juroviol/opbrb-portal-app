@@ -64,12 +64,16 @@ createRoot(document.getElementById('root')!).render(
           Layout: {
             headerBg: 'white',
             triggerBg: 'white',
-            triggerColor: '#1f1b1c',
+            siderBg: 'white',
           },
           Input: {
             activeShadow: '0 0 0 2px rgba(197,112,115, 0.2)',
           },
+          DatePicker: {
+            activeShadow: '0 0 0 2px rgba(197,112,115, 0.2)',
+          },
           Select: {
+            activeOutlineColor: 'rgba(197,112,115, 0.2)',
             optionSelectedBg: 'rgb(123,8,8)',
             optionSelectedColor: 'rgba(255,255,255,0.88)',
           },

@@ -91,7 +91,6 @@ function App() {
             ...(location.pathname.includes('minha-conta') ? ['profile'] : []),
           ]}
           mode="inline"
-          style={{ height: '100%' }}
           items={[
             ...(hasPermission(Scope.CanListPastors)
               ? [
