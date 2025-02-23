@@ -126,3 +126,27 @@ export const CREATE_PASTOR = gql`
     }
   }
 `;
+
+export const UPDATE_PASTOR_PERSONAL_INFO = gql`
+  mutation UpdatePastorPersonalInfo(
+    $_id: ID!
+    $name: String
+    $cpf: String
+    $maritalStatus: MaritalStatus
+    $birthday: Date
+  ) {
+    updatePastorPersonalInfo(
+      _id: $_id
+      name: $name
+      cpf: $cpf
+      maritalStatus: $maritalStatus
+      birthday: $birthday
+    ) {
+      _id
+      name
+      cpf
+      maritalStatus
+      birthday
+    }
+  }
+`;

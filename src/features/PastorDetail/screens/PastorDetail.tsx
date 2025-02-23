@@ -41,48 +41,48 @@ function PastorDetail() {
         {
           key: 'birthday',
           label: 'Data de nascimento',
-          children: dayjs(data?.getPastor?.birthday).format('DD/MM/YYYY'),
+          children: dayjs(data.getPastor.birthday).format('DD/MM/YYYY'),
           span: 2,
         },
         {
           key: 'maritalStatus',
           label: 'Estado civil',
-          children: data?.getPastor.maritalStatus,
+          children: data.getPastor.maritalStatus,
         },
         {
           key: 'email',
           label: 'E-mail',
-          children: data?.getPastor?.email,
+          children: data?.getPastor.email,
         },
         {
           key: 'cellPhone',
           label: 'Celular',
-          children: data?.getPastor?.cellPhone,
+          children: data?.getPastor.cellPhone,
           span: 3,
         },
         {
           key: 'zipCode',
           label: 'CEP',
-          children: data?.getPastor?.zipCode,
+          children: data?.getPastor.zipCode,
         },
         {
           key: 'address',
           label: 'Endereço',
-          children: `${data?.getPastor.street}, ${data?.getPastor.number} - ${data?.getPastor.district}, ${data?.getPastor.city} - ${data?.getPastor.state}`,
+          children: `${data.getPastor.street}, ${data.getPastor.number} - ${data.getPastor.district}, ${data.getPastor.city} - ${data.getPastor.state}`,
           span: 3,
         },
         {
           key: 'church',
           label: 'Igreja',
-          children: data?.getPastor.church,
+          children: data.getPastor.church,
         },
         {
           key: 'ordinanceTime',
           label: 'Ordenado há',
           children:
-            data?.getPastor.ordinanceTime > 12
-              ? `${data?.getPastor.ordinanceTime / 12} ${
-                  data?.getPastor.ordinanceTime / 12 > 1 ? 'anos' : 'ano'
+            data.getPastor.ordinanceTime > 12
+              ? `${data.getPastor.ordinanceTime / 12} ${
+                  data.getPastor.ordinanceTime / 12 > 1 ? 'anos' : 'ano'
                 }`
               : `${data.getPastor.ordinanceTime} ${
                   data.getPastor.ordinanceTime > 1 ? 'meses' : 'mês'
