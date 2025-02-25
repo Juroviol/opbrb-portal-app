@@ -10,7 +10,7 @@ import {
   Tag,
   Typography,
 } from 'antd';
-import Pastor, { Status } from '../../../models/Pastor.ts';
+import Pastor, { MaritalStatus, Status } from '../../../models/Pastor.ts';
 import dayjs from 'dayjs';
 import { DownloadOutlined } from '@ant-design/icons';
 import { useCallback, useMemo } from 'react';
@@ -48,7 +48,11 @@ function PastorDetail() {
         {
           key: 'maritalStatus',
           label: 'Estado civil',
-          children: data.getPastor.maritalStatus,
+          children:
+            MaritalStatus[
+              data.getPastor
+                .maritalStatus as string as keyof typeof MaritalStatus
+            ],
         },
         {
           key: 'email',
