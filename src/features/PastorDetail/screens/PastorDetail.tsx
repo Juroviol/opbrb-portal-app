@@ -135,6 +135,7 @@ function PastorDetail() {
     <Flex vertical gap={10}>
       <Breadcrumb
         items={[
+          { title: 'Home' },
           {
             title: <Link to="/pastores">Pastores</Link>,
           },

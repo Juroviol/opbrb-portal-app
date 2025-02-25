@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { GET_PASTORS } from '../../../querys/pastorQuery.ts';
-import { Button, Flex, Table, Tag } from 'antd';
+import { Breadcrumb, Button, Flex, Table, Tag } from 'antd';
 import Pastor, { Status } from '../../../models/Pastor.ts';
 import { useCallback, useState } from 'react';
 import dayjs from 'dayjs';
@@ -33,7 +33,15 @@ function Pastors() {
     navigate(`/pastor/${id}`);
   }, []);
   return (
-    <>
+    <Flex vertical gap={10}>
+      <Breadcrumb
+        items={[
+          { title: 'Home' },
+          {
+            title: 'Pastores',
+          },
+        ]}
+      />
       <Table
         dataSource={data?.getPastors.docs}
         pagination={{
@@ -93,7 +101,7 @@ function Pastors() {
           },
         ]}
       />
-    </>
+    </Flex>
   );
 }
 
