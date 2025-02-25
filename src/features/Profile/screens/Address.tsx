@@ -1,15 +1,31 @@
-import { Card, Col, Form, Input, Row, Select } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  notification,
+  Row,
+  Select,
+} from 'antd';
 import { isCEP, required } from '../../../validators.ts';
 import MaskedInput from '@components/MaskedInput';
 import { UFS } from '@consts';
 import { useCallback } from 'react';
-import { useQuery } from '@apollo/client';
-import { GET_PASTOR_ADDRESS_INFO } from '../../../querys/pastorQuery.ts';
+import { useMutation, useQuery } from '@apollo/client';
+import {
+  GET_PASTOR_ADDRESS_INFO,
+  UPDATE_PASTOR_ADDRESS,
+} from '../../../querys/pastorQuery.ts';
 import { useAuth } from '../../../contexts/AuthContext.tsx';
+import Pastor from '../../../models/Pastor.ts';
 
 function Address() {
   const { user } = useAuth();
-  const { loading, data } = useQuery(GET_PASTOR_ADDRESS_INFO, {
+  const [update, mutation] = useMutation<{
+    updatePastor: Pastor;
+  }>(UPDATE_PASTOR_ADDRESS);
+  const query = useQuery(GET_PASTOR_ADDRESS_INFO, {
     variables: {
       id: user?._id,
     },
@@ -35,13 +51,38 @@ function Address() {
     },
     [form]
   );
+
+  const onFinish = useCallback(
+    async (values: {
+      zipCode: string;
+      street: string;
+      district: string;
+      city: string;
+      state: string;
+    }) => {
+      const result = await update({
+        variables: {
+          _id: user?._id,
+          ...values,
+        },
+      });
+      if (result.data?.updatePastor) {
+        notification.success({
+          message: 'Endereço atualizado com sucesso!',
+        });
+      }
+    },
+    [user]
+  );
+
   return (
-    <Card loading={loading}>
+    <Card loading={query.loading}>
       <Form
         layout="vertical"
         form={form}
+        onFinish={onFinish}
         onValuesChange={handleValuesChange}
-        initialValues={data?.getPastor}
+        initialValues={query.data?.getPastor}
       >
         <Row>
           <Col span={6}>
@@ -109,6 +150,13 @@ function Address() {
             >
               <Select size="large" options={UFS} />
             </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} style={{ textAlign: 'right' }}>
+            <Button type="primary" htmlType="submit" loading={mutation.loading}>
+              Atualizar
+            </Button>
           </Col>
         </Row>
       </Form>

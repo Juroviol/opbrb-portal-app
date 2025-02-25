@@ -1,20 +1,50 @@
-import { Card, Col, Form, Input, Row } from 'antd';
+import { Button, Card, Col, Form, Input, notification, Row } from 'antd';
 import { email, required } from '../../../validators.ts';
 import MaskedInput from '@components/MaskedInput';
-import { useQuery } from '@apollo/client';
-import { GET_PASTOR_CONTACT_INFO } from '../../../querys/pastorQuery.ts';
+import { useMutation, useQuery } from '@apollo/client';
+import {
+  GET_PASTOR_CONTACT_INFO,
+  UPDATE_PASTOR_CONTACT_INFO,
+} from '../../../querys/pastorQuery.ts';
 import { useAuth } from '../../../contexts/AuthContext.tsx';
+import Pastor from '../../../models/Pastor.ts';
+import { useCallback } from 'react';
 
 function ContactInformation() {
   const { user } = useAuth();
-  const { loading, data } = useQuery(GET_PASTOR_CONTACT_INFO, {
+  const [update, mutation] = useMutation<{ updatePastor: Pastor }>(
+    UPDATE_PASTOR_CONTACT_INFO
+  );
+  const query = useQuery(GET_PASTOR_CONTACT_INFO, {
     variables: {
       id: user?._id,
     },
   });
+
+  const onFinish = useCallback(
+    async (values: { cellPhone: string; email: string }) => {
+      const result = await update({
+        variables: {
+          _id: user?._id,
+          ...values,
+        },
+      });
+      if (result.data?.updatePastor) {
+        notification.success({
+          message: 'Informações de contato atualizadas com sucesso!',
+        });
+      }
+    },
+    [user]
+  );
+
   return (
-    <Card loading={loading}>
-      <Form layout="vertical" initialValues={data?.getPastor}>
+    <Card loading={query.loading}>
+      <Form
+        layout="vertical"
+        onFinish={onFinish}
+        initialValues={query.data?.getPastor}
+      >
         <Row gutter={10}>
           <Col span={12}>
             <Form.Item
@@ -35,6 +65,13 @@ function ContactInformation() {
             >
               <Input size="large" />
             </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} style={{ textAlign: 'right' }}>
+            <Button type="primary" htmlType="submit" loading={mutation.loading}>
+              Atualizar
+            </Button>
           </Col>
         </Row>
       </Form>

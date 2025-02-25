@@ -79,6 +79,8 @@ export const GET_PASTOR_MINISTRY_INFO = gql`
     getPastor(id: $id) {
       church
       ordinanceTime
+      recommendationLetterUrl
+      paymentConfirmationUrl
     }
   }
 `;
@@ -130,12 +132,12 @@ export const CREATE_PASTOR = gql`
 export const UPDATE_PASTOR_PERSONAL_INFO = gql`
   mutation UpdatePastorPersonalInfo(
     $_id: ID!
-    $name: String
-    $cpf: String
-    $maritalStatus: MaritalStatus
-    $birthday: Date
+    $name: String!
+    $cpf: String!
+    $maritalStatus: MaritalStatus!
+    $birthday: Date!
   ) {
-    updatePastorPersonalInfo(
+    updatePastor(
       _id: $_id
       name: $name
       cpf: $cpf
@@ -147,6 +149,82 @@ export const UPDATE_PASTOR_PERSONAL_INFO = gql`
       cpf
       maritalStatus
       birthday
+    }
+  }
+`;
+
+export const UPDATE_PASTOR_ADDRESS = gql`
+  mutation UpdatePastorAddress(
+    $_id: ID!
+    $zipCode: String!
+    $street: String!
+    $district: String!
+    $city: String!
+    $state: String!
+  ) {
+    updatePastor(
+      _id: $_id
+      zipCode: $zipCode
+      street: $street
+      district: $district
+      city: $city
+      state: $state
+    ) {
+      _id
+      zipCode
+      street
+      district
+      city
+      state
+    }
+  }
+`;
+
+export const UPDATE_PASTOR_CONTACT_INFO = gql`
+  mutation UpdatePastorContactInfo(
+    $_id: ID!
+    $cellPhone: String!
+    $email: String!
+  ) {
+    updatePastor(_id: $_id, cellPhone: $cellPhone, email: $email) {
+      _id
+      cellPhone
+      email
+    }
+  }
+`;
+
+export const UPDATE_PASTOR_MINISTRY_INFO = gql`
+  mutation UpdatePastorMinistryInfo(
+    $_id: ID!
+    $church: String!
+    $ordinanceTime: Int!
+    $fileLetter: Upload
+    $filePaymentConfirmation: Upload
+  ) {
+    updatePastor(
+      _id: $_id
+      church: $church
+      ordinanceTime: $ordinanceTime
+      fileLetter: $fileLetter
+      filePaymentConfirmation: $filePaymentConfirmation
+    ) {
+      _id
+      recommendationLetterUrl
+      paymentConfirmationUrl
+    }
+  }
+`;
+
+export const UPDATE_PASTOR_CREDENTIALS = gql`
+  mutation UpdatePastorMinistryInfo(
+    $_id: ID!
+    $password: String!
+    $newPassword: String!
+  ) {
+    updatePastor(_id: $_id, password: $password, newPassword: $newPassword) {
+      _id
+      password
     }
   }
 `;

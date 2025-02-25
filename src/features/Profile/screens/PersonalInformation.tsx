@@ -18,55 +18,52 @@ import {
 } from '../../../querys/pastorQuery.ts';
 import { useAuth } from '../../../contexts/AuthContext.tsx';
 import dayjs from 'dayjs';
-import { useCallback, useEffect } from 'react';
-import { MaritalStatus } from '../../../models/Pastor.ts';
+import { useCallback } from 'react';
+import Pastor, { MaritalStatus } from '../../../models/Pastor.ts';
 
 function PersonalInformation() {
   const { user } = useAuth();
-  const [updatePersonalInfo, updatePersonalInfoMutation] = useMutation(
-    UPDATE_PASTOR_PERSONAL_INFO
-  );
-  const getPersonalInfoQuery = useQuery(GET_PASTOR_PERSONAL_INFO, {
+  const [update, mutation] = useMutation<{
+    updatePastor: Pastor;
+  }>(UPDATE_PASTOR_PERSONAL_INFO);
+  const query = useQuery(GET_PASTOR_PERSONAL_INFO, {
     variables: {
       id: user?._id,
     },
   });
 
-  useEffect(() => {
-    if (updatePersonalInfoMutation.data?.updatePastorPersonalInfo) {
-      notification.success({
-        message: 'Informações pessoais atualizadas com sucesso!',
-      });
-    }
-  }, [updatePersonalInfoMutation.data]);
-
   const onFinish = useCallback(
-    (values: {
+    async (values: {
       name: string;
       cpf: string;
       birthday: dayjs.Dayjs;
       maritalStatus: MaritalStatus;
     }) => {
-      updatePersonalInfo({
+      const result = await update({
         variables: {
           _id: user?._id,
           ...values,
           birthday: values.birthday.format('YYYY-MM-DD'),
         },
       });
+      if (result.data?.updatePastor) {
+        notification.success({
+          message: 'Informações pessoais atualizadas com sucesso!',
+        });
+      }
     },
     [user]
   );
 
   return (
-    <Card loading={getPersonalInfoQuery.loading}>
+    <Card loading={query.loading}>
       <Form
         layout="vertical"
         onFinish={onFinish}
         initialValues={{
-          ...(getPersonalInfoQuery.data?.getPastor && {
-            ...getPersonalInfoQuery.data.getPastor,
-            birthday: dayjs(getPersonalInfoQuery.data.getPastor.birthday),
+          ...(query.data?.getPastor && {
+            ...query.data.getPastor,
+            birthday: dayjs(query.data.getPastor.birthday),
           }),
         }}
       >
@@ -135,11 +132,7 @@ function PersonalInformation() {
         </Row>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={updatePersonalInfoMutation.loading}
-            >
+            <Button type="primary" htmlType="submit" loading={mutation.loading}>
               Atualizar
             </Button>
           </Col>
