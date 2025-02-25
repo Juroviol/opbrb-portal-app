@@ -468,9 +468,9 @@ export default function Registration() {
               avaliação for concluída.
             </Typography.Paragraph>
             <Typography.Paragraph>
-              Se tiver alguma dúvida,{' '}
-              <a href="https://wa.me/5541966666755" target="_blank">
-                entre em contato conosco
+              Se tiver alguma dúvida, entre em contato pelo e-mail{' '}
+              <a href="mailto:contato@opbrb.com.br" target="_blank">
+                contato@opbrb.com.br
               </a>
               .
             </Typography.Paragraph>
