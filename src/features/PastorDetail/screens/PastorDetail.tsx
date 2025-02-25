@@ -29,6 +29,7 @@ function PastorDetail() {
   const handleDownload = useCallback((url: string) => {
     const link = document.createElement('a');
     link.href = `${import.meta.env.VITE_ASSETS_URL}/${url}`;
+    link.target = '_blank';
     link.download = url.split('/').pop() as string;
     link.click();
     link.parentNode?.removeChild(link);
