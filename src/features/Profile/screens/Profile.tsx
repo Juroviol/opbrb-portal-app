@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import {
   BookOutlined,
   HomeOutlined,
+  IdcardOutlined,
   LockOutlined,
   PhoneOutlined,
   SolutionOutlined,
@@ -23,6 +24,9 @@ function Profile() {
         : []),
       ...(location.pathname.includes('ministerio') ? ['ministry'] : []),
       ...(location.pathname.includes('senha') ? ['credentials'] : []),
+      ...(location.pathname.includes('carteirinha-ordem')
+        ? ['order-card']
+        : []),
     ];
   }, [location.pathname]);
   return (
@@ -72,6 +76,11 @@ function Profile() {
                 label: <Link to="ministerio">Ministério</Link>,
                 icon: <BookOutlined />,
                 key: 'ministry',
+              },
+              {
+                label: <Link to="carteirinha-ordem">Carteirinha</Link>,
+                icon: <IdcardOutlined />,
+                key: 'order-card',
               },
               {
                 label: <Link to="senha">Senha</Link>,

@@ -8,6 +8,7 @@ export const GET_LOGGED_USER = gql`
       email
       role
       scopes
+      pictureUrl
     }
   }
 `;

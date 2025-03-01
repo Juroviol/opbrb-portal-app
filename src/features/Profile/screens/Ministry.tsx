@@ -11,7 +11,7 @@ import {
   Typography,
   Upload,
 } from 'antd';
-import { required } from '../../../validators.ts';
+import { fileSize, required } from '../../../validators.ts';
 import { MINISTRY_ORDINANCE_TIME } from '@consts';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { useCallback } from 'react';
@@ -43,6 +43,7 @@ function Ministry() {
       ordinanceTime: number;
       letter: { file: RcFile };
       paymentConfirmation: { file: RcFile };
+      ordinationMinutes: { file: RcFile };
     }) => {
       const result = await update({
         variables: {
@@ -53,6 +54,9 @@ function Ministry() {
           }),
           ...(values.paymentConfirmation && {
             filePaymentConfirmation: values.paymentConfirmation.file,
+          }),
+          ...(values.ordinationMinutes && {
+            fileOrdinationMinutes: values.ordinationMinutes.file,
           }),
         },
       });
@@ -118,68 +122,160 @@ function Ministry() {
           </Col>
         </Row>
         <Row>
-          <Col span={12}>
+          <Col span={8}>
             <Form.Item
-              name="letter"
-              label={
-                <Flex gap={5} align="center">
-                  <Typography.Text>
-                    Carta de recomendação da Igreja
-                  </Typography.Text>
-                  {!!query.data?.getPastor.recommendationLetterUrl && (
-                    <Button
-                      shape="circle"
-                      icon={<DownloadOutlined />}
-                      onClick={() =>
-                        handleDownload(
-                          query.data.getPastor.recommendationLetterUrl!
-                        )
-                      }
-                    />
-                  )}
-                </Flex>
+              noStyle
+              shouldUpdate={(prevValues, nextValues) =>
+                prevValues.ordinationMinutes !== nextValues.ordinationMinutes
               }
             >
-              <Upload
-                multiple={false}
-                maxCount={1}
-                accept=".png,.jpeg,.jpg,.pdf"
-                beforeUpload={handleBeforeUpload}
-              >
-                <Button icon={<UploadOutlined />}>Escolher o arquivo</Button>
-              </Upload>
+              {(formInstance) => (
+                <Form.Item
+                  name="ordinationMinutes"
+                  label={
+                    <Flex gap={5} align="center">
+                      <Typography.Text>Ata de ordenação</Typography.Text>
+                      {!!query.data?.getPastor.ordinationMinutesUrl && (
+                        <Button
+                          shape="circle"
+                          icon={<DownloadOutlined />}
+                          onClick={() =>
+                            handleDownload(
+                              query.data.getPastor.ordinationMinutesUrl!
+                            )
+                          }
+                        />
+                      )}
+                    </Flex>
+                  }
+                  rules={[fileSize('ordinationMinutes')]}
+                >
+                  <Upload
+                    multiple={false}
+                    maxCount={1}
+                    accept=".png,.jpeg,.jpg,.pdf"
+                    beforeUpload={handleBeforeUpload}
+                    showUploadList={
+                      !!formInstance.getFieldValue('ordinationMinutes')
+                    }
+                    onRemove={() => {
+                      formInstance.setFieldValue(
+                        'ordinationMinutes',
+                        undefined
+                      );
+                      return false;
+                    }}
+                  >
+                    <Button icon={<UploadOutlined />}>
+                      Escolher o arquivo
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              )}
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             <Form.Item
-              name="paymentConfirmation"
-              label={
-                <Flex gap={5} align="center">
-                  <Typography.Text>
-                    Comprovante de pagamento anual
-                  </Typography.Text>
-                  {!!query.data?.getPastor.paymentConfirmationUrl && (
-                    <Button
-                      shape="circle"
-                      icon={<DownloadOutlined />}
-                      onClick={() =>
-                        handleDownload(
-                          query.data.getPastor.paymentConfirmationUrl!
-                        )
-                      }
-                    />
-                  )}
-                </Flex>
+              noStyle
+              shouldUpdate={(prevValues, nextValues) =>
+                prevValues.letter !== nextValues.letter
               }
             >
-              <Upload
-                multiple={false}
-                maxCount={1}
-                accept=".png,.jpeg,.jpg,.pdf"
-                beforeUpload={handleBeforeUpload}
-              >
-                <Button icon={<UploadOutlined />}>Escolher o arquivo</Button>
-              </Upload>
+              {(formInstance) => (
+                <Form.Item
+                  name="letter"
+                  label={
+                    <Flex gap={5} align="center">
+                      <Typography.Text>
+                        Carta de recomendação da Igreja
+                      </Typography.Text>
+                      {!!query.data?.getPastor.recommendationLetterUrl && (
+                        <Button
+                          shape="circle"
+                          icon={<DownloadOutlined />}
+                          onClick={() =>
+                            handleDownload(
+                              query.data.getPastor.recommendationLetterUrl!
+                            )
+                          }
+                        />
+                      )}
+                    </Flex>
+                  }
+                  rules={[fileSize('letter')]}
+                >
+                  <Upload
+                    multiple={false}
+                    maxCount={1}
+                    accept=".png,.jpeg,.jpg,.pdf"
+                    beforeUpload={handleBeforeUpload}
+                    showUploadList={!!formInstance.getFieldValue('letter')}
+                    onRemove={() => {
+                      formInstance.setFieldValue('letter', undefined);
+                      return false;
+                    }}
+                  >
+                    <Button icon={<UploadOutlined />}>
+                      Escolher o arquivo
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              noStyle
+              shouldUpdate={(prevValues, nextValues) =>
+                prevValues.paymentConfirmation !==
+                nextValues.paymentConfirmation
+              }
+            >
+              {(formInstance) => (
+                <Form.Item
+                  name="paymentConfirmation"
+                  label={
+                    <Flex gap={5} align="center">
+                      <Typography.Text>
+                        Comprovante de pagamento anual
+                      </Typography.Text>
+                      {!!query.data?.getPastor.paymentConfirmationUrl && (
+                        <Button
+                          shape="circle"
+                          icon={<DownloadOutlined />}
+                          onClick={() =>
+                            handleDownload(
+                              query.data.getPastor.paymentConfirmationUrl!
+                            )
+                          }
+                        />
+                      )}
+                    </Flex>
+                  }
+                  rules={[fileSize('paymentConfirmation')]}
+                >
+                  <Upload
+                    multiple={false}
+                    maxCount={1}
+                    accept=".png,.jpeg,.jpg,.pdf"
+                    beforeUpload={handleBeforeUpload}
+                    showUploadList={
+                      !!formInstance.getFieldValue('paymentConfirmation')
+                    }
+                    onRemove={() => {
+                      formInstance.setFieldValue(
+                        'paymentConfirmation',
+                        undefined
+                      );
+                      return false;
+                    }}
+                  >
+                    <Button icon={<UploadOutlined />}>
+                      Escolher o arquivo
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              )}
             </Form.Item>
           </Col>
         </Row>

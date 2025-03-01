@@ -118,20 +118,20 @@ export function equalToField(fieldName: string, label: string): Rule {
   });
 }
 
-export const fileSize: Rule = {
-  validator(_, value: { file: RcFile }) {
-    if (
-      value &&
-      value.file.type.toString().includes('image') &&
-      value.file.size / 1024 / 1024 > 1
-    ) {
-      return Promise.reject(
-        new Error('O tamanho da imagem não pode ser maior que 1mb')
-      );
-    }
-    return Promise.resolve();
-  },
-};
+export const fileSize: (fieldName: string) => Rule =
+  (fieldName) =>
+  ({ setFieldValue }) => {
+    return {
+      validator(_, value: { file: RcFile }) {
+        console.log(value);
+        if (value && value.file && value.file.size / 1024 / 1024 > 1) {
+          setFieldValue(fieldName, undefined);
+          return Promise.reject(new Error('Arquivo maior que 1 MB'));
+        }
+        return Promise.resolve();
+      },
+    };
+  };
 
 export const isCEP: Rule = {
   validator: (_, value: string) => {

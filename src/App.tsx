@@ -28,6 +28,7 @@ import Ministry from '@features/Profile/screens/Ministry.tsx';
 import Credentials from '@features/Profile/screens/Credentials.tsx';
 import { useCallback, useState } from 'react';
 import { debounce, throttle } from 'lodash';
+import OrderCard from '@features/Profile/screens/OrderCard.tsx';
 
 function App() {
   const navigate = useNavigate();
@@ -145,7 +146,11 @@ function App() {
               }}
             >
               <Flex gap={4}>
-                <Avatar icon={<UserOutlined />} size="large" />
+                <Avatar
+                  src={`${import.meta.env.VITE_ASSETS_URL}/${user.pictureUrl}`}
+                  icon={<UserOutlined />}
+                  size="large"
+                />
                 <DownOutlined style={{ fontSize: 10 }} />
               </Flex>
             </Dropdown>
@@ -177,6 +182,7 @@ function App() {
               />
               <Route path="ministerio" element={<Ministry />} />
               <Route path="senha" element={<Credentials />} />
+              <Route path="carteirinha-ordem" element={<OrderCard />} />
             </Route>
             {hasPermission(Scope.CanListPastors) && (
               <Route path="/pastores" element={<Pastors />} />

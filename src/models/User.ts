@@ -21,4 +21,5 @@ export default interface User {
   name: string;
   role: Role;
   scopes: Scope[];
+  pictureUrl?: string;
 }

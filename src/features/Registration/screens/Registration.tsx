@@ -18,6 +18,7 @@ import LogoEscritoTransparente from '@assets/logo_escrito_transparente.png';
 import {
   email,
   equalToField,
+  fileSize,
   isCEP,
   isCPF,
   required,
@@ -31,12 +32,14 @@ import { CREATE_PASTOR, GET_PASTOR } from '../../../querys/pastorQuery.ts';
 import dayjs from 'dayjs';
 import Pastor from '../../../models/Pastor.ts';
 import { MINISTRY_ORDINANCE_TIME, UFS } from '@consts';
+import Picture3_4 from '@assets/3_4.webp';
 
 enum Step {
   PERSONAL_INFORMATION = 'Informações pessoais',
   ADDRESS = 'Endereço',
   CONTACT_INFORMATION = 'Informações de contato',
   MINISTRY = 'Ministério',
+  ORDER_CARD = 'Carteirinha da ordem',
   CREDENTIALS = 'Senha',
   ANALYSING = 'Análise',
 }
@@ -52,6 +55,8 @@ type FormFields = {
   state: string;
   number: string;
   district: string;
+  picture: RcFile;
+  ordinationMinutes: RcFile;
   letter: RcFile;
   paymentConfirmation: RcFile;
 };
@@ -60,7 +65,7 @@ export default function Registration() {
   const [currentStep, setCurrentStep] = useState(0);
   const [form] = Form.useForm<FormFields>();
 
-  const queryPastor = useQuery<Pastor>(GET_PASTOR, {
+  const queryPastor = useQuery<{ getPastor: Pastor }>(GET_PASTOR, {
     skip: !localStorage.getItem('id'),
     variables: {
       id: localStorage.getItem('id'),
@@ -74,7 +79,7 @@ export default function Registration() {
       if (mutationPastor.data) {
         localStorage.setItem('id', mutationPastor.data.createPastor._id);
       }
-      setCurrentStep(5);
+      setCurrentStep(6);
     }
   }, [queryPastor.data, mutationPastor.data]);
 
@@ -92,7 +97,7 @@ export default function Registration() {
 
   const handleBeforeUpload = useCallback(() => {
     return false;
-  }, []);
+  }, [form]);
 
   const handleValuesChange = useCallback(
     ({ zipCode }: { zipCode: string }) => {
@@ -119,7 +124,14 @@ export default function Registration() {
     async (values: object) => {
       localStorage.setItem(
         steps[currentStep].title,
-        JSON.stringify(omit(values, ['letter', 'paymentConfirmation']))
+        JSON.stringify(
+          omit(values, [
+            'letter',
+            'paymentConfirmation',
+            'ordinationMinutes',
+            'picture',
+          ])
+        )
       );
       if (steps[currentStep].title !== Step.CREDENTIALS) {
         setCurrentStep(currentStep + 1);
@@ -131,6 +143,12 @@ export default function Registration() {
             birthday: allFormValues.birthday.format('YYYY-MM-DD'),
             ...(allFormValues.letter && {
               fileLetter: allFormValues.letter.file,
+            }),
+            ...(allFormValues.ordinationMinutes && {
+              fileOrdinationMinutes: allFormValues.ordinationMinutes.file,
+            }),
+            ...(allFormValues.picture && {
+              filePicture: allFormValues.picture.file,
             }),
             ...(allFormValues.paymentConfirmation && {
               filePaymentConfirmation: allFormValues.paymentConfirmation.file,
@@ -156,6 +174,7 @@ export default function Registration() {
       {
         title: Step.MINISTRY,
       },
+      { title: Step.ORDER_CARD },
       {
         title: Step.CREDENTIALS,
       },
@@ -166,8 +185,13 @@ export default function Registration() {
     []
   );
 
+  console.log(queryPastor.data);
+
   return (
-    <Card style={{ width: 700, marginBlock: 20 }}>
+    <Card
+      style={{ width: 800, marginBlock: 20 }}
+      loading={!!localStorage.getItem('id') && !queryPastor.data?.getPastor}
+    >
       <Flex vertical style={{ width: '100%' }} justify="center" align="center">
         <img src={LogoEscritoTransparente} height={150} />
         <Divider style={{ margin: 0 }} />
@@ -400,42 +424,197 @@ export default function Registration() {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col span={8}>
                 <Form.Item
-                  name="letter"
-                  label="Carta de recomendação da Igreja"
+                  noStyle
+                  shouldUpdate={(prevValues, nextValues) =>
+                    prevValues.ordinationMinutes !==
+                    nextValues.ordinationMinutes
+                  }
                 >
-                  <Upload
-                    multiple={false}
-                    maxCount={1}
-                    accept=".png,.jpeg,.jpg,.pdf"
-                    beforeUpload={handleBeforeUpload}
-                  >
-                    <Button icon={<UploadOutlined />}>
-                      Escolher o arquivo
-                    </Button>
-                  </Upload>
+                  {(formInstance) => (
+                    <Form.Item
+                      name="ordinationMinutes"
+                      label="Ata de ordenação"
+                      rules={[fileSize('ordinationMinutes')]}
+                    >
+                      <Upload
+                        multiple={false}
+                        maxCount={1}
+                        accept=".png,.jpeg,.jpg,.pdf"
+                        beforeUpload={handleBeforeUpload}
+                        showUploadList={
+                          !!formInstance.getFieldValue('ordinationMinutes')
+                        }
+                        onRemove={() => {
+                          formInstance.setFieldValue(
+                            'ordinationMinutes',
+                            undefined
+                          );
+                          return false;
+                        }}
+                      >
+                        <Button icon={<UploadOutlined />}>
+                          Escolher o arquivo
+                        </Button>
+                      </Upload>
+                    </Form.Item>
+                  )}
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={8}>
                 <Form.Item
-                  name="paymentConfirmation"
-                  label="Comprovante de pagamento anual"
+                  noStyle
+                  shouldUpdate={(prevValues, nextValues) =>
+                    prevValues.letter !== nextValues.letter
+                  }
                 >
-                  <Upload
-                    multiple={false}
-                    maxCount={1}
-                    accept=".png,.jpeg,.jpg,.pdf"
-                    beforeUpload={handleBeforeUpload}
-                  >
-                    <Button icon={<UploadOutlined />}>
-                      Escolher o arquivo
-                    </Button>
-                  </Upload>
+                  {(formInstance) => (
+                    <Form.Item
+                      name="letter"
+                      label="Carta de recomendação da Igreja"
+                      rules={[fileSize('letter')]}
+                    >
+                      <Upload
+                        multiple={false}
+                        maxCount={1}
+                        accept=".png,.jpeg,.jpg,.pdf"
+                        beforeUpload={handleBeforeUpload}
+                        showUploadList={!!formInstance.getFieldValue('letter')}
+                        onRemove={() => {
+                          formInstance.setFieldValue('letter', undefined);
+                          return false;
+                        }}
+                      >
+                        <Button icon={<UploadOutlined />}>
+                          Escolher o arquivo
+                        </Button>
+                      </Upload>
+                    </Form.Item>
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item
+                  noStyle
+                  shouldUpdate={(prevValues, nextValues) =>
+                    prevValues.paymentConfirmation !==
+                    nextValues.paymentConfirmation
+                  }
+                >
+                  {(formInstance) => (
+                    <Form.Item
+                      name="paymentConfirmation"
+                      label="Comprovante de pagamento anual"
+                      rules={[fileSize('paymentConfirmation')]}
+                    >
+                      <Upload
+                        multiple={false}
+                        maxCount={1}
+                        accept=".png,.jpeg,.jpg,.pdf"
+                        beforeUpload={handleBeforeUpload}
+                        showUploadList={
+                          !!formInstance.getFieldValue('paymentConfirmation')
+                        }
+                        onRemove={() => {
+                          formInstance.setFieldValue(
+                            'paymentConfirmation',
+                            undefined
+                          );
+                          return false;
+                        }}
+                      >
+                        <Button icon={<UploadOutlined />}>
+                          Escolher o arquivo
+                        </Button>
+                      </Upload>
+                    </Form.Item>
+                  )}
                 </Form.Item>
               </Col>
             </Row>
           </>
+        )}
+        {steps[currentStep].title === Step.ORDER_CARD && (
+          <Row>
+            <Col span={24}>
+              <Form.Item
+                noStyle
+                shouldUpdate={(prevValues, nextValues) =>
+                  prevValues.picture !== nextValues.picture
+                }
+              >
+                {(formInstance) => (
+                  <Form.Item name="picture" rules={[fileSize('picture')]}>
+                    <Upload.Dragger
+                      beforeUpload={() => false}
+                      showUploadList={!!formInstance.getFieldValue('picture')}
+                      fileList={
+                        formInstance.getFieldValue('picture')
+                          ? [
+                              {
+                                uid: (
+                                  formInstance.getFieldValue('picture') as {
+                                    file: RcFile;
+                                  }
+                                ).file.uid,
+                                name: (
+                                  formInstance.getFieldValue('picture') as {
+                                    file: RcFile;
+                                  }
+                                ).file.name,
+                              },
+                            ]
+                          : []
+                      }
+                      onRemove={() => {
+                        formInstance.setFieldValue('picture', undefined);
+                        return false;
+                      }}
+                    >
+                      {!formInstance.getFieldValue('picture') && (
+                        <>
+                          <div
+                            style={{
+                              margin: 'auto',
+                              width: 300,
+                              height: 350,
+                              overflow: 'hidden',
+                              position: 'relative',
+                            }}
+                          >
+                            <img
+                              style={{
+                                position: 'absolute',
+                                top: -55,
+                                left: -80,
+                              }}
+                              src={Picture3_4}
+                              width={400}
+                            />
+                          </div>
+                          <p className="ant-upload-text">
+                            Clique ou arraste o arquivo da foto para esta área.
+                          </p>
+                          <p className="ant-upload-text">
+                            A foto deve ter formato 3x4 com fundo branco.
+                          </p>
+                        </>
+                      )}
+                      {formInstance.getFieldValue('picture')?.file && (
+                        <img
+                          width={300}
+                          src={URL.createObjectURL(
+                            formInstance.getFieldValue('picture').file
+                          )}
+                        />
+                      )}
+                    </Upload.Dragger>
+                  </Form.Item>
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
         )}
         {steps[currentStep].title === Step.CREDENTIALS && (
           <>
