@@ -37,6 +37,8 @@ export default function OrderCard() {
   useEffect(() => {
     if (user && user.pictureUrl) {
       loadCurrentPicture();
+    } else {
+      setLoading(false);
     }
     return () => {
       if (urlRef.current) URL.revokeObjectURL(urlRef.current);
