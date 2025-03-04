@@ -37,6 +37,8 @@ export const GET_PASTOR = gql`
       status
       recommendationLetterUrl
       paymentConfirmationUrl
+      ordinationMinutesUrl
+      cpfRgUrl
     }
   }
 `;

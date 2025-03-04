@@ -23,6 +23,8 @@ export enum Scope {
   CanRejectPastorFinancialAnalysis = 'CanRejectPastorFinancialAnalysis',
   CanDownloadPastorRecommendationLetter = 'CanDownloadPastorRecommendationLetter',
   CanDownloadPastorPaymentConfirmation = 'CanDownloadPastorPaymentConfirmation',
+  CanDownloadPastorOrdinationMinutes = 'CanDownloadPastorOrdinationMinutes',
+  CanDownloadPastorCpfRg = 'CanDownloadPastorCpfRg',
 }
 
 export default interface User {

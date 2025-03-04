@@ -108,7 +108,6 @@ function PastorDetail() {
                     }
                   />
                 ),
-                span: 2,
               },
             ]
           : []),
@@ -126,7 +125,38 @@ function PastorDetail() {
                     }
                   />
                 ),
-                span: 2,
+              },
+            ]
+          : []),
+        ...(hasPermission(Scope.CanDownloadPastorOrdinationMinutes) &&
+        data.getPastor.ordinationMinutesUrl
+          ? [
+              {
+                key: 'ordinationMinutes',
+                label: 'Ata de ordenação',
+                children: (
+                  <Button
+                    icon={<DownloadOutlined />}
+                    onClick={() =>
+                      handleDownload(data.getPastor.ordinationMinutesUrl!)
+                    }
+                  />
+                ),
+              },
+            ]
+          : []),
+        ...(hasPermission(Scope.CanDownloadPastorCpfRg) &&
+        data.getPastor.cpfRgUrl
+          ? [
+              {
+                key: 'cpfRg',
+                label: 'Cópia do CPF/RG',
+                children: (
+                  <Button
+                    icon={<DownloadOutlined />}
+                    onClick={() => handleDownload(data.getPastor.cpfRgUrl!)}
+                  />
+                ),
               },
             ]
           : []),
