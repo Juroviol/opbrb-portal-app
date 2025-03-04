@@ -59,6 +59,7 @@ type FormFields = {
   ordinationMinutes: RcFile;
   letter: RcFile;
   paymentConfirmation: RcFile;
+  cpfRg: RcFile;
 };
 
 export default function Registration() {
@@ -130,6 +131,7 @@ export default function Registration() {
             'paymentConfirmation',
             'ordinationMinutes',
             'picture',
+            'cpfRg',
           ])
         )
       );
@@ -152,6 +154,9 @@ export default function Registration() {
             }),
             ...(allFormValues.paymentConfirmation && {
               filePaymentConfirmation: allFormValues.paymentConfirmation.file,
+            }),
+            ...(allFormValues.cpfRg && {
+              fileCpfRg: allFormValues.cpfRg.file,
             }),
           },
         });
@@ -424,7 +429,7 @@ export default function Registration() {
               </Col>
             </Row>
             <Row>
-              <Col span={8}>
+              <Col span={12}>
                 <Form.Item
                   noStyle
                   shouldUpdate={(prevValues, nextValues) =>
@@ -462,7 +467,7 @@ export default function Registration() {
                   )}
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col span={12}>
                 <Form.Item
                   noStyle
                   shouldUpdate={(prevValues, nextValues) =>
@@ -494,7 +499,9 @@ export default function Registration() {
                   )}
                 </Form.Item>
               </Col>
-              <Col span={8}>
+            </Row>
+            <Row>
+              <Col span={12}>
                 <Form.Item
                   noStyle
                   shouldUpdate={(prevValues, nextValues) =>
@@ -521,6 +528,38 @@ export default function Registration() {
                             'paymentConfirmation',
                             undefined
                           );
+                          return false;
+                        }}
+                      >
+                        <Button icon={<UploadOutlined />}>
+                          Escolher o arquivo
+                        </Button>
+                      </Upload>
+                    </Form.Item>
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  noStyle
+                  shouldUpdate={(prevValues, nextValues) =>
+                    prevValues.cpfRg !== nextValues.cpfRg
+                  }
+                >
+                  {(formInstance) => (
+                    <Form.Item
+                      name="cpfRg"
+                      label="Cópia do CPF/RG"
+                      rules={[fileSize('cpfRg')]}
+                    >
+                      <Upload
+                        multiple={false}
+                        maxCount={1}
+                        accept=".png,.jpeg,.jpg,.pdf"
+                        beforeUpload={handleBeforeUpload}
+                        showUploadList={!!formInstance.getFieldValue('cpfRg')}
+                        onRemove={() => {
+                          formInstance.setFieldValue('cpfRg', undefined);
                           return false;
                         }}
                       >

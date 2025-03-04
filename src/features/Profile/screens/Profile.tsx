@@ -9,8 +9,11 @@ import {
   PhoneOutlined,
   SolutionOutlined,
 } from '@ant-design/icons';
+import { useAuth } from '../../../contexts/AuthContext.tsx';
+import { Scope } from '../../../models/User.ts';
 
 function Profile() {
+  const { hasPermission } = useAuth();
   const location = useLocation();
 
   const selectedMenuKeys = useMemo(() => {
@@ -53,40 +56,68 @@ function Profile() {
             selectedKeys={selectedMenuKeys}
             mode="inline"
             items={[
-              {
-                label: (
-                  <Link to="informacoes-pessoais">Informações pessoais</Link>
-                ),
-                icon: <SolutionOutlined />,
-                key: 'personal-information',
-              },
-              {
-                label: <Link to="endereco">Endereço</Link>,
-                icon: <HomeOutlined />,
-                key: 'address',
-              },
-              {
-                label: (
-                  <Link to="informacoes-contato">Informações de contato</Link>
-                ),
-                icon: <PhoneOutlined />,
-                key: 'contact-information',
-              },
-              {
-                label: <Link to="ministerio">Ministério</Link>,
-                icon: <BookOutlined />,
-                key: 'ministry',
-              },
-              {
-                label: <Link to="carteirinha-ordem">Carteirinha</Link>,
-                icon: <IdcardOutlined />,
-                key: 'order-card',
-              },
-              {
-                label: <Link to="senha">Senha</Link>,
-                icon: <LockOutlined />,
-                key: 'credentials',
-              },
+              ...(hasPermission(Scope.CanEditProfilePersonalInfo)
+                ? [
+                    {
+                      label: (
+                        <Link to="informacoes-pessoais">
+                          Informações pessoais
+                        </Link>
+                      ),
+                      icon: <SolutionOutlined />,
+                      key: 'personal-information',
+                    },
+                  ]
+                : []),
+              ...(hasPermission(Scope.CanEditProfileAddress)
+                ? [
+                    {
+                      label: <Link to="endereco">Endereço</Link>,
+                      icon: <HomeOutlined />,
+                      key: 'address',
+                    },
+                  ]
+                : []),
+              ...(hasPermission(Scope.CanEditProfileContactInfo)
+                ? [
+                    {
+                      label: (
+                        <Link to="informacoes-contato">
+                          Informações de contato
+                        </Link>
+                      ),
+                      icon: <PhoneOutlined />,
+                      key: 'contact-information',
+                    },
+                  ]
+                : []),
+              ...(hasPermission(Scope.CanEditProfileMinistry)
+                ? [
+                    {
+                      label: <Link to="ministerio">Ministério</Link>,
+                      icon: <BookOutlined />,
+                      key: 'ministry',
+                    },
+                  ]
+                : []),
+              ...(hasPermission(Scope.CanEditProfileOrderCard)
+                ? [
+                    {
+                      label: <Link to="carteirinha-ordem">Carteirinha</Link>,
+                      icon: <IdcardOutlined />,
+                      key: 'order-card',
+                    },
+                  ]
+                : []),
+              ...(hasPermission(Scope.CanEditProfileCredentials)
+                ? [
+                    {
+                      label: <Link to="senha">Senha</Link>,
+                      icon: <LockOutlined />,
+                      key: 'credentials',
+                    },
+                  ]
+                : []),
             ]}
           />
         </Layout.Sider>

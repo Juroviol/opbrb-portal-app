@@ -82,6 +82,7 @@ export const GET_PASTOR_MINISTRY_INFO = gql`
       recommendationLetterUrl
       paymentConfirmationUrl
       ordinationMinutesUrl
+      cpfRgUrl
     }
   }
 `;
@@ -92,6 +93,7 @@ export const CREATE_PASTOR = gql`
     $filePaymentConfirmation: Upload
     $fileOrdinationMinutes: Upload
     $filePicture: Upload
+    $fileCpfRg: Upload
     $name: String!
     $cpf: String!
     $email: String!
@@ -113,6 +115,7 @@ export const CREATE_PASTOR = gql`
       filePaymentConfirmation: $filePaymentConfirmation
       fileOrdinationMinutes: $fileOrdinationMinutes
       filePicture: $filePicture
+      fileCpfRg: $fileCpfRg
       name: $name
       cpf: $cpf
       email: $email
@@ -207,6 +210,7 @@ export const UPDATE_PASTOR_MINISTRY_INFO = gql`
     $fileLetter: Upload
     $filePaymentConfirmation: Upload
     $fileOrdinationMinutes: Upload
+    $fileCpfRg: Upload
   ) {
     updatePastor(
       _id: $_id
@@ -215,11 +219,13 @@ export const UPDATE_PASTOR_MINISTRY_INFO = gql`
       fileLetter: $fileLetter
       filePaymentConfirmation: $filePaymentConfirmation
       fileOrdinationMinutes: $fileOrdinationMinutes
+      fileCpfRg: $fileCpfRg
     ) {
       _id
       recommendationLetterUrl
       paymentConfirmationUrl
       ordinationMinutesUrl
+      cpfRgUrl
     }
   }
 `;

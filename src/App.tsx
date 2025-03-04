@@ -171,18 +171,30 @@ function App() {
               }
             />
             <Route path="/minha-conta" element={<Profile />}>
-              <Route
-                path="informacoes-pessoais"
-                element={<PersonalInformation />}
-              />
-              <Route path="endereco" element={<Address />} />
-              <Route
-                path="informacoes-contato"
-                element={<ContactInformation />}
-              />
-              <Route path="ministerio" element={<Ministry />} />
-              <Route path="senha" element={<Credentials />} />
-              <Route path="carteirinha-ordem" element={<OrderCard />} />
+              {hasPermission(Scope.CanEditProfilePersonalInfo) && (
+                <Route
+                  path="informacoes-pessoais"
+                  element={<PersonalInformation />}
+                />
+              )}
+              {hasPermission(Scope.CanEditProfileAddress) && (
+                <Route path="endereco" element={<Address />} />
+              )}
+              {hasPermission(Scope.CanEditProfileContactInfo) && (
+                <Route
+                  path="informacoes-contato"
+                  element={<ContactInformation />}
+                />
+              )}
+              {hasPermission(Scope.CanEditProfileMinistry) && (
+                <Route path="ministerio" element={<Ministry />} />
+              )}
+              {hasPermission(Scope.CanEditProfileCredentials) && (
+                <Route path="senha" element={<Credentials />} />
+              )}
+              {hasPermission(Scope.CanEditProfileOrderCard) && (
+                <Route path="carteirinha-ordem" element={<OrderCard />} />
+              )}
             </Route>
             {hasPermission(Scope.CanListPastors) && (
               <Route path="/pastores" element={<Pastors />} />

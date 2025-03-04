@@ -44,6 +44,7 @@ function Ministry() {
       letter: { file: RcFile };
       paymentConfirmation: { file: RcFile };
       ordinationMinutes: { file: RcFile };
+      cpfRg: { file: RcFile };
     }) => {
       const result = await update({
         variables: {
@@ -57,6 +58,9 @@ function Ministry() {
           }),
           ...(values.ordinationMinutes && {
             fileOrdinationMinutes: values.ordinationMinutes.file,
+          }),
+          ...(values.cpfRg && {
+            fileCpfRg: values.cpfRg.file,
           }),
         },
       });
@@ -122,7 +126,7 @@ function Ministry() {
           </Col>
         </Row>
         <Row>
-          <Col span={8}>
+          <Col span={12}>
             <Form.Item
               noStyle
               shouldUpdate={(prevValues, nextValues) =>
@@ -174,7 +178,7 @@ function Ministry() {
               )}
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <Form.Item
               noStyle
               shouldUpdate={(prevValues, nextValues) =>
@@ -223,7 +227,9 @@ function Ministry() {
               )}
             </Form.Item>
           </Col>
-          <Col span={8}>
+        </Row>
+        <Row>
+          <Col span={12}>
             <Form.Item
               noStyle
               shouldUpdate={(prevValues, nextValues) =>
@@ -267,6 +273,51 @@ function Ministry() {
                         'paymentConfirmation',
                         undefined
                       );
+                      return false;
+                    }}
+                  >
+                    <Button icon={<UploadOutlined />}>
+                      Escolher o arquivo
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              noStyle
+              shouldUpdate={(prevValues, nextValues) =>
+                prevValues.cpfRg !== nextValues.cpfRg
+              }
+            >
+              {(formInstance) => (
+                <Form.Item
+                  name="cpfRg"
+                  label={
+                    <Flex gap={5} align="center">
+                      <Typography.Text>Cópia do CPF/RG</Typography.Text>
+                      {!!query.data?.getPastor.cpfRgUrl && (
+                        <Button
+                          shape="circle"
+                          icon={<DownloadOutlined />}
+                          onClick={() =>
+                            handleDownload(query.data.getPastor.cpfRgUrl!)
+                          }
+                        />
+                      )}
+                    </Flex>
+                  }
+                  rules={[fileSize('cpfRg')]}
+                >
+                  <Upload
+                    multiple={false}
+                    maxCount={1}
+                    accept=".png,.jpeg,.jpg,.pdf"
+                    beforeUpload={handleBeforeUpload}
+                    showUploadList={!!formInstance.getFieldValue('cpfRg')}
+                    onRemove={() => {
+                      formInstance.setFieldValue('cpfRg', undefined);
                       return false;
                     }}
                   >
