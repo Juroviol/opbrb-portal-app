@@ -28,6 +28,10 @@
       "@features/*": ["src/features/*"],
       "@components/*": ["src/components/*"],
       "@consts": ["src/consts/index.ts"],
+      "@querys/*": ["src/querys/*"],
+      "@models/*": ["src/models/*"],
+      "@validators": ["src/validators.ts"],
+      "@contexts/*": ["src/contexts/*"]
     }
   },
   "include": [
