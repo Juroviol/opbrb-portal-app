@@ -1,13 +1,13 @@
 import { useQuery } from '@apollo/client';
-import { GET_PASTORS } from '../../../querys/pastorQuery.ts';
+import { GET_PASTORS } from '@querys/pastorQuery';
 import { Breadcrumb, Button, Flex, Table, Tag } from 'antd';
 import Pastor, { Status } from '../../../models/Pastor.ts';
 import { useCallback, useState } from 'react';
 import dayjs from 'dayjs';
 import { EyeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext.tsx';
-import { Scope } from '../../../models/User.ts';
+import { useAuth } from '@contexts/AuthContext';
+import { Scope } from '@models/User';
 
 function Pastors() {
   const { hasPermission } = useAuth();
@@ -68,21 +68,26 @@ function Pastors() {
             dataIndex: 'createdAt',
             render: (value) => dayjs(value).format('DD/MM/YYYY'),
           },
-          {
-            title: 'Status',
-            dataIndex: 'status',
-            render: (value) => (
-              <Tag
-                color={
-                  { [Status.APPROVED]: 'green', [Status.ANALYSING]: 'yellow' }[
-                    value as Status
-                  ]
-                }
-              >
-                {value}
-              </Tag>
-            ),
-          },
+          ...(hasPermission(Scope.CanDetailPastor)
+            ? [
+                {
+                  title: 'Status',
+                  dataIndex: 'status',
+                  render: (value: Status) => (
+                    <Tag
+                      color={
+                        {
+                          [Status.APPROVED]: 'green',
+                          [Status.ANALYSING]: 'yellow',
+                        }[value]
+                      }
+                    >
+                      {value}
+                    </Tag>
+                  ),
+                },
+              ]
+            : []),
           {
             title: '',
             dataIndex: '_id',
