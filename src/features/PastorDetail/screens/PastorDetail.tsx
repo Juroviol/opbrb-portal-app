@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_PASTOR } from '../../../querys/pastorQuery.ts';
+import { GET_PASTOR } from '@querys/pastorQuery';
 import { Link, useParams } from 'react-router-dom';
 import {
   Breadcrumb,
@@ -14,8 +14,8 @@ import Pastor, { MaritalStatus, Status } from '../../../models/Pastor.ts';
 import dayjs from 'dayjs';
 import { DownloadOutlined } from '@ant-design/icons';
 import { useCallback, useMemo } from 'react';
-import { useAuth } from '../../../contexts/AuthContext.tsx';
-import { Scope } from '../../../models/User.ts';
+import { useAuth } from '@contexts/AuthContext';
+import { Scope } from '@models/User';
 
 function PastorDetail() {
   const { hasPermission } = useAuth();

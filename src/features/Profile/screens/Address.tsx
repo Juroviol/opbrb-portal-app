@@ -8,7 +8,7 @@ import {
   Row,
   Select,
 } from 'antd';
-import { isCEP, required } from '../../../validators.ts';
+import { isCEP, required } from '@validators';
 import MaskedInput from '@components/MaskedInput';
 import { UFS } from '@consts';
 import { useCallback } from 'react';
@@ -16,9 +16,9 @@ import { useMutation, useQuery } from '@apollo/client';
 import {
   GET_PASTOR_ADDRESS_INFO,
   UPDATE_PASTOR_ADDRESS,
-} from '../../../querys/pastorQuery.ts';
-import { useAuth } from '../../../contexts/AuthContext.tsx';
-import Pastor from '../../../models/Pastor.ts';
+} from '@querys/pastorQuery.ts';
+import { useAuth } from '@contexts/AuthContext';
+import Pastor from '../../../models/Pastor';
 
 function Address() {
   const { user } = useAuth();

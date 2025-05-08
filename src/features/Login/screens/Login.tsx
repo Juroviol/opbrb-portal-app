@@ -10,11 +10,11 @@ import {
 } from 'antd';
 import LogoEscritoTransparente from '@assets/logo_escrito_transparente.png';
 import { useNavigate } from 'react-router-dom';
-import { required } from '../../../validators.ts';
+import { required } from '@validators';
 import { useMutation } from '@apollo/client';
-import { AUTHENTICATE } from '../../../querys/userQuery.ts';
+import { AUTHENTICATE } from '@querys/userQuery';
 import { useCallback } from 'react';
-import { useAuth } from '../../../contexts/AuthContext.tsx';
+import { useAuth } from '@contexts/AuthContext';
 
 export default function Login() {
   const navigate = useNavigate();

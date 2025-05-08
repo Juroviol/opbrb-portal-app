@@ -11,7 +11,7 @@ import {
   Typography,
   Upload,
 } from 'antd';
-import { fileSize, required } from '../../../validators.ts';
+import { fileSize, required } from '@validators';
 import { MINISTRY_ORDINANCE_TIME } from '@consts';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { useCallback } from 'react';
@@ -19,8 +19,8 @@ import { useMutation, useQuery } from '@apollo/client';
 import {
   GET_PASTOR_MINISTRY_INFO,
   UPDATE_PASTOR_MINISTRY_INFO,
-} from '../../../querys/pastorQuery.ts';
-import { useAuth } from '../../../contexts/AuthContext.tsx';
+} from '@querys/pastorQuery';
+import { useAuth } from '@contexts/AuthContext';
 import { RcFile } from 'antd/es/upload/interface';
 
 function Ministry() {

@@ -1,13 +1,13 @@
 import { Button, Card, Col, Form, Input, notification, Row } from 'antd';
-import { email, required } from '../../../validators.ts';
+import { email, required } from '@validators';
 import MaskedInput from '@components/MaskedInput';
 import { useMutation, useQuery } from '@apollo/client';
 import {
   GET_PASTOR_CONTACT_INFO,
   UPDATE_PASTOR_CONTACT_INFO,
-} from '../../../querys/pastorQuery.ts';
-import { useAuth } from '../../../contexts/AuthContext.tsx';
-import Pastor from '../../../models/Pastor.ts';
+} from '@querys/pastorQuery';
+import { useAuth } from '@contexts/AuthContext';
+import Pastor from '@models/Pastor';
 import { useCallback } from 'react';
 
 function ContactInformation() {

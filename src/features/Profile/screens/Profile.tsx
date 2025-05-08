@@ -9,8 +9,8 @@ import {
   PhoneOutlined,
   SolutionOutlined,
 } from '@ant-design/icons';
-import { useAuth } from '../../../contexts/AuthContext.tsx';
-import { Scope } from '../../../models/User.ts';
+import { useAuth } from '@contexts/AuthContext';
+import { Scope } from '@models/User';
 
 function Profile() {
   const { hasPermission } = useAuth();

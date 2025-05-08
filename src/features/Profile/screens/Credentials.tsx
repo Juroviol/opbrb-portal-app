@@ -1,9 +1,9 @@
 import { Button, Card, Col, Form, Input, notification, Row } from 'antd';
-import { required } from '../../../validators.ts';
-import { UPDATE_PASTOR_CREDENTIALS } from '../../../querys/pastorQuery.ts';
+import { required } from '@validators';
+import { UPDATE_PASTOR_CREDENTIALS } from '@querys/pastorQuery';
 import { ApolloError, useMutation } from '@apollo/client';
 import { useCallback } from 'react';
-import { useAuth } from '../../../contexts/AuthContext.tsx';
+import { useAuth } from '@contexts/AuthContext';
 
 function Credentials() {
   const { user } = useAuth();

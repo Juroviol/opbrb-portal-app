@@ -9,14 +9,14 @@ import {
   Row,
   Select,
 } from 'antd';
-import { isCPF, required } from '../../../validators.ts';
+import { isCPF, required } from '@validators';
 import MaskedInput from '@components/MaskedInput';
 import { useMutation, useQuery } from '@apollo/client';
 import {
   GET_PASTOR_PERSONAL_INFO,
   UPDATE_PASTOR_PERSONAL_INFO,
-} from '../../../querys/pastorQuery.ts';
-import { useAuth } from '../../../contexts/AuthContext.tsx';
+} from '@querys/pastorQuery';
+import { useAuth } from '@contexts/AuthContext';
 import dayjs from 'dayjs';
 import { useCallback } from 'react';
 import Pastor, { MaritalStatus } from '../../../models/Pastor.ts';

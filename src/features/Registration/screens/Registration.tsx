@@ -22,15 +22,15 @@ import {
   isCEP,
   isCPF,
   required,
-} from '../../../validators.ts';
+} from '@validators';
 import MaskedInput from '@components/MaskedInput';
 import { omit } from 'lodash';
 import { UploadOutlined } from '@ant-design/icons';
 import { RcFile } from 'antd/es/upload/interface';
 import { useMutation, useQuery } from '@apollo/client';
-import { CREATE_PASTOR, GET_PASTOR } from '../../../querys/pastorQuery.ts';
+import { CREATE_PASTOR, GET_PASTOR } from '@querys/pastorQuery';
 import dayjs from 'dayjs';
-import Pastor from '../../../models/Pastor.ts';
+import Pastor from '@models/Pastor';
 import { MINISTRY_ORDINANCE_TIME, UFS } from '@consts';
 import Picture3_4 from '@assets/3_4.webp';
 

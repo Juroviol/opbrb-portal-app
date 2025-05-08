@@ -1,11 +1,11 @@
 import { Button, Card, Col, Form, notification, Row, Upload } from 'antd';
-import { fileSize } from '../../../validators.ts';
+import { fileSize } from '@validators';
 import { RcFile } from 'antd/es/upload/interface';
 import Picture3_4 from '@assets/3_4.webp';
-import { useAuth } from '../../../contexts/AuthContext.tsx';
+import { useAuth } from '@contexts/AuthContext';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { UPDATE_PASTOR_ORDER_CARD } from '../../../querys/pastorQuery.ts';
+import { UPDATE_PASTOR_ORDER_CARD } from '@querys/pastorQuery';
 
 export default function OrderCard() {
   const [form] = Form.useForm();
