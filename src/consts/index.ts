@@ -1,4 +1,5 @@
 import { range } from 'lodash';
+import { Scope } from '@models/User.ts';
 
 export const UFS = [
   { label: 'Acre', value: 'Acre' },
@@ -40,3 +41,106 @@ export const MINISTRY_ORDINANCE_TIME = [
     value: v * 12,
   })),
 ];
+
+export const SCOPES_DETAILS: {
+  [k in Scope]: { title: string; description: string };
+} = {
+  [Scope.CanListPastors]: {
+    title: 'Listar cadastros de pastores',
+    description: 'Permite listar todos os pastores cadastrados.',
+  },
+  [Scope.CanDetailPastor]: {
+    title: 'Detalhar cadastro de pastor',
+    description: 'Permite visualizar todos os dados de um cadastro de pastor.',
+  },
+  [Scope.CanDeletePastor]: {
+    title: 'Excluir cadastro de pastor',
+    description: 'Permite excluir permanentemente o cadastro de um pastor.',
+  },
+
+  [Scope.CanEditAccountPersonalInfo]: {
+    title: 'Editar dados pessoais do cadastro',
+    description:
+      'Permite editar do seu próprio cadastroas as informações pessoais como nome, data de nascimento, etc.',
+  },
+  [Scope.CanEditAccountCredentials]: {
+    title: 'Editar credenciais do cadastro',
+    description:
+      'Permite editar do seu próprio cadastro as credenciais de acesso deste portal.',
+  },
+  [Scope.CanEditAccountAddress]: {
+    title: 'Editar endereço do cadastro',
+    description:
+      'Permite editar no seu próprio cadastro o endereço residencial.',
+  },
+  [Scope.CanEditAccountContactInfo]: {
+    title: 'Editar contatos do cadastro',
+    description: 'Permite editar no seu próprio cadastro o telefone e e-mail.',
+  },
+  [Scope.CanEditAccountMinistry]: {
+    title: 'Editar informações ministeriais',
+    description:
+      'Permite editar no seu próprio cadastro dados referentes ao ministério exercido.',
+  },
+  [Scope.CanEditAccountOrderCard]: {
+    title: 'Editar pedido de carteirinha',
+    description:
+      'Permite editar no seu próprio cadastro dados da carteirinha da ordem.',
+  },
+  [Scope.CanApprovePastorDocumentationAnalysis]: {
+    title: 'Aprovar análise de documentação',
+    description: 'Permite aprovar a análise documental do cadastro do pastor.',
+  },
+  [Scope.CanRejectPastorDocumentationAnalysis]: {
+    title: 'Rejeitar análise de documentação',
+    description: 'Permite rejeitar a análise documental do cadastro do pastor.',
+  },
+  [Scope.CanApprovePastorFinancialAnalysis]: {
+    title: 'Aprovar análise financeira',
+    description: 'Permite aprovar a análise financeira do cadastro do pastor.',
+  },
+  [Scope.CanRejectPastorFinancialAnalysis]: {
+    title: 'Rejeitar análise financeira',
+    description: 'Permite rejeitar a análise financeira do cadastro do pastor.',
+  },
+  [Scope.CanDownloadPastorRecommendationLetter]: {
+    title: 'Baixar carta de recomendação',
+    description:
+      'Permite realizar o download da carta de recomendação cadastrada.',
+  },
+  [Scope.CanDownloadPastorPaymentConfirmation]: {
+    title: 'Baixar comprovante de pagamento',
+    description:
+      'Permite realizar o download do comprovante de pagamento enviado pelo pastor.',
+  },
+  [Scope.CanDownloadPastorOrdinationMinutes]: {
+    title: 'Baixar ata de ordenação',
+    description: 'Permite realizar o download da ata de ordenação do pastor.',
+  },
+  [Scope.CanDownloadPastorCpfRg]: {
+    title: 'Baixar documentos CPF e RG',
+    description:
+      'Permite realizar o download dos documentos CPF e RG anexados pelo pastor.',
+  },
+  [Scope.CanListProfileScopes]: {
+    title: 'Listar perfis de permissão cadastrado',
+    description: 'Permite listar os perfis de permissões cadastrados.',
+  },
+  [Scope.CanEditProfileScopes]: {
+    title: 'Editar perfis de permissão',
+    description:
+      'Permite editar um perfil de permissão atribuindo ou removendo permissões.',
+  },
+  [Scope.CanCreateProfileScopes]: {
+    title: 'Criar perfis de permissão',
+    description: 'Permite cadastrar novos perfis de permissão.',
+  },
+  [Scope.CanDeleteProfileScopes]: {
+    title: 'Excluir perfis de permissão',
+    description: 'Permite excluir um perfil de permissão.',
+  },
+  [Scope.CanAssignProfileScopes]: {
+    title: 'Atribuir permissões',
+    description: 'Permite associar permissões a perfis e usuários.',
+  },
+};

@@ -1,26 +1,43 @@
-import { useQuery } from '@apollo/client';
-import { GET_PASTOR } from '@querys/pastorQuery.ts';
+import { useMutation, useQuery } from '@apollo/client';
+import { GET_PASTOR, UPDATE_PASTOR_SCOPES } from '@querys/pastorQuery.ts';
 import { Link, useParams } from 'react-router-dom';
 import {
   Breadcrumb,
   Button,
   Card,
+  Collapse,
   Descriptions,
   Flex,
+  Form,
+  notification,
   Tag,
+  Transfer,
   Typography,
 } from 'antd';
 import Pastor, { MaritalStatus, Status } from '@models/Pastor.ts';
 import dayjs from 'dayjs';
-import { DownloadOutlined } from '@ant-design/icons';
+import {
+  CheckCircleFilled,
+  DeleteFilled,
+  DownloadOutlined,
+} from '@ant-design/icons';
 import { useCallback, useMemo } from 'react';
 import { useAuth } from '@contexts/AuthContext.tsx';
 import { Scope } from '@models/User.ts';
+import { GET_SCOPES } from '@querys/scopeQuery.ts';
+import { SCOPES_DETAILS } from '@consts';
+import { TransferKey } from 'antd/es/transfer/interface';
+import { compact } from 'lodash';
 
 function PastorDetailScreen() {
   const { hasPermission } = useAuth();
+  const [form] = Form.useForm();
   const params = useParams();
-  const { loading, data } = useQuery<{ getPastor: Pastor }>(GET_PASTOR, {
+
+  const [updateScopes, updateScopesMutation] =
+    useMutation(UPDATE_PASTOR_SCOPES);
+  const scopesQuery = useQuery<{ scopes: Scope[] }>(GET_SCOPES);
+  const getPastorQuery = useQuery<{ getPastor: Pastor }>(GET_PASTOR, {
     variables: {
       id: params.id,
     },
@@ -36,13 +53,19 @@ function PastorDetailScreen() {
   }, []);
 
   const descriptionItems = useMemo(() => {
-    if (data) {
+    if (getPastorQuery.data) {
       return [
-        { key: 'cpf', label: 'CPF', children: data.getPastor.cpf },
+        {
+          key: 'cpf',
+          label: 'CPF',
+          children: getPastorQuery.data.getPastor.cpf,
+        },
         {
           key: 'birthday',
           label: 'Data de nascimento',
-          children: dayjs(data.getPastor.birthday).format('DD/MM/YYYY'),
+          children: dayjs(getPastorQuery.data.getPastor.birthday).format(
+            'DD/MM/YYYY'
+          ),
           span: 2,
         },
         {
@@ -50,52 +73,56 @@ function PastorDetailScreen() {
           label: 'Estado civil',
           children:
             MaritalStatus[
-              data.getPastor
+              getPastorQuery.data.getPastor
                 .maritalStatus as string as keyof typeof MaritalStatus
             ],
         },
         {
           key: 'email',
           label: 'E-mail',
-          children: data?.getPastor.email,
+          children: getPastorQuery.data?.getPastor.email,
         },
         {
           key: 'cellPhone',
           label: 'Celular',
-          children: data?.getPastor.cellPhone,
+          children: getPastorQuery.data?.getPastor.cellPhone,
           span: 3,
         },
         {
           key: 'zipCode',
           label: 'CEP',
-          children: data?.getPastor.zipCode,
+          children: getPastorQuery.data?.getPastor.zipCode,
         },
         {
           key: 'address',
           label: 'Endereço',
-          children: `${data.getPastor.street}, ${data.getPastor.number} - ${data.getPastor.district}, ${data.getPastor.city} - ${data.getPastor.state}`,
+          children: `${getPastorQuery.data.getPastor.street}, ${getPastorQuery.data.getPastor.number} - ${getPastorQuery.data.getPastor.district}, ${getPastorQuery.data.getPastor.city} - ${getPastorQuery.data.getPastor.state}`,
           span: 3,
         },
         {
           key: 'church',
           label: 'Igreja',
-          children: data.getPastor.church,
+          children: getPastorQuery.data.getPastor.church,
         },
         {
           key: 'ordinanceTime',
           label: 'Ordenado há',
           children:
-            data.getPastor.ordinanceTime > 12
-              ? `${data.getPastor.ordinanceTime / 12} ${
-                  data.getPastor.ordinanceTime / 12 > 1 ? 'anos' : 'ano'
+            getPastorQuery.data.getPastor.ordinanceTime > 12
+              ? `${getPastorQuery.data.getPastor.ordinanceTime / 12} ${
+                  getPastorQuery.data.getPastor.ordinanceTime / 12 > 1
+                    ? 'anos'
+                    : 'ano'
                 }`
-              : `${data.getPastor.ordinanceTime} ${
-                  data.getPastor.ordinanceTime > 1 ? 'meses' : 'mês'
+              : `${getPastorQuery.data.getPastor.ordinanceTime} ${
+                  getPastorQuery.data.getPastor.ordinanceTime > 1
+                    ? 'meses'
+                    : 'mês'
                 }`,
           span: 3,
         },
         ...(hasPermission(Scope.CanDownloadPastorRecommendationLetter) &&
-        data.getPastor.recommendationLetterUrl
+        getPastorQuery.data.getPastor.recommendationLetterUrl
           ? [
               {
                 key: 'recommendationLetter',
@@ -104,7 +131,9 @@ function PastorDetailScreen() {
                   <Button
                     icon={<DownloadOutlined />}
                     onClick={() =>
-                      handleDownload(data.getPastor.recommendationLetterUrl!)
+                      handleDownload(
+                        getPastorQuery.data?.getPastor.recommendationLetterUrl!
+                      )
                     }
                   />
                 ),
@@ -112,7 +141,7 @@ function PastorDetailScreen() {
             ]
           : []),
         ...(hasPermission(Scope.CanDownloadPastorPaymentConfirmation) &&
-        data.getPastor.paymentConfirmationUrl
+        getPastorQuery.data.getPastor.paymentConfirmationUrl
           ? [
               {
                 key: 'paymentConfirmation',
@@ -121,7 +150,9 @@ function PastorDetailScreen() {
                   <Button
                     icon={<DownloadOutlined />}
                     onClick={() =>
-                      handleDownload(data.getPastor.paymentConfirmationUrl!)
+                      handleDownload(
+                        getPastorQuery.data?.getPastor.paymentConfirmationUrl!
+                      )
                     }
                   />
                 ),
@@ -129,7 +160,7 @@ function PastorDetailScreen() {
             ]
           : []),
         ...(hasPermission(Scope.CanDownloadPastorOrdinationMinutes) &&
-        data.getPastor.ordinationMinutesUrl
+        getPastorQuery.data.getPastor.ordinationMinutesUrl
           ? [
               {
                 key: 'ordinationMinutes',
@@ -138,7 +169,9 @@ function PastorDetailScreen() {
                   <Button
                     icon={<DownloadOutlined />}
                     onClick={() =>
-                      handleDownload(data.getPastor.ordinationMinutesUrl!)
+                      handleDownload(
+                        getPastorQuery.data?.getPastor.ordinationMinutesUrl!
+                      )
                     }
                   />
                 ),
@@ -146,7 +179,7 @@ function PastorDetailScreen() {
             ]
           : []),
         ...(hasPermission(Scope.CanDownloadPastorCpfRg) &&
-        data.getPastor.cpfRgUrl
+        getPastorQuery.data.getPastor.cpfRgUrl
           ? [
               {
                 key: 'cpfRg',
@@ -154,7 +187,9 @@ function PastorDetailScreen() {
                 children: (
                   <Button
                     icon={<DownloadOutlined />}
-                    onClick={() => handleDownload(data.getPastor.cpfRgUrl!)}
+                    onClick={() =>
+                      handleDownload(getPastorQuery.data?.getPastor.cpfRgUrl!)
+                    }
                   />
                 ),
               },
@@ -163,7 +198,26 @@ function PastorDetailScreen() {
       ];
     }
     return [];
-  }, [data]);
+  }, [getPastorQuery.data]);
+
+  const handlePermissionsChange = useCallback(
+    (nextTargetKeys: TransferKey[]) => {
+      form.setFieldValue('scopes', nextTargetKeys.join());
+    },
+    []
+  );
+
+  const handleFinish = useCallback(async () => {
+    await updateScopes({
+      variables: {
+        _id: params.id,
+        scopes: compact(form.getFieldValue('scopes').split(',')),
+      },
+    });
+    notification.success({
+      message: 'Permissões atualizadas com sucesso!.',
+    });
+  }, []);
 
   return (
     <Flex vertical gap={30}>
@@ -174,41 +228,126 @@ function PastorDetailScreen() {
             title: <Link to="/pastores">Pastores</Link>,
           },
           {
-            title: data?.getPastor.name,
+            title: getPastorQuery.data?.getPastor.name,
           },
         ]}
       />
-      <Card loading={loading}>
-        {!!data && (
-          <Descriptions
-            column={4}
-            title={
-              <Flex gap={10} align="center">
-                <Typography.Text
-                  style={{
-                    fontSize: 'calc(var(--ant-font-size) * 1.3)',
-                  }}
-                  strong
+      <Card loading={getPastorQuery.loading}>
+        {!!getPastorQuery.data && (
+          <Flex vertical>
+            <Descriptions
+              column={4}
+              title={
+                <Flex gap={10} align="center">
+                  <Typography.Text
+                    style={{
+                      fontSize: 'calc(var(--ant-font-size) * 1.3)',
+                    }}
+                    strong
+                  >
+                    {getPastorQuery.data.getPastor.name}
+                  </Typography.Text>
+                  <Tag
+                    color={
+                      {
+                        [Status.APPROVED]: 'green',
+                        [Status.ANALYSING]: 'yellow',
+                      }[getPastorQuery.data.getPastor.status]
+                    }
+                  >
+                    {getPastorQuery.data.getPastor.status}
+                  </Tag>
+                </Flex>
+              }
+              items={descriptionItems}
+              layout="vertical"
+            />
+            <Flex justify="flex-end" gap={10}>
+              {hasPermission(Scope.CanApprovePastorDocumentationAnalysis) && (
+                <Button icon={<CheckCircleFilled />} type="primary">
+                  Aprovar Documentação
+                </Button>
+              )}
+              {hasPermission(Scope.CanApprovePastorFinancialAnalysis) && (
+                <Button icon={<CheckCircleFilled />} type="primary">
+                  Aprovar Financeiro
+                </Button>
+              )}
+              {hasPermission(Scope.CanDeletePastor) && (
+                <Button
+                  icon={<DeleteFilled />}
+                  type="primary"
+                  variant="solid"
+                  color="danger"
                 >
-                  {data?.getPastor.name}
-                </Typography.Text>
-                <Tag
-                  color={
-                    {
-                      [Status.APPROVED]: 'green',
-                      [Status.ANALYSING]: 'yellow',
-                    }[data!.getPastor.status]
-                  }
-                >
-                  {data?.getPastor.status}
-                </Tag>
-              </Flex>
-            }
-            items={descriptionItems}
-            layout="vertical"
-          />
+                  Excluir
+                </Button>
+              )}
+            </Flex>
+          </Flex>
         )}
       </Card>
+      {hasPermission(Scope.CanAssignProfileScopes) && (
+        <Collapse
+          style={{
+            backgroundColor: 'white',
+          }}
+        >
+          <Collapse.Panel header="Permissões" key="scopes">
+            <Flex vertical>
+              <Form
+                form={form}
+                onFinish={handleFinish}
+                initialValues={{
+                  ...(getPastorQuery.data?.getPastor && {
+                    scopes: getPastorQuery.data?.getPastor.scopes.join(),
+                  }),
+                }}
+              >
+                <Form.Item
+                  shouldUpdate={(prevValues, nextValues) =>
+                    prevValues.scopes !== nextValues.scopes
+                  }
+                  noStyle
+                >
+                  {({ getFieldValue }) => (
+                    <Transfer
+                      style={{ minWidth: '50%' }}
+                      titles={['Todas permissões', 'Permissões atribuídas']}
+                      dataSource={scopesQuery.data?.scopes.map((scope) => ({
+                        key: scope,
+                        ...SCOPES_DETAILS[scope],
+                      }))}
+                      targetKeys={getFieldValue('scopes')?.split(',') || []}
+                      onChange={handlePermissionsChange}
+                      render={(item) => (
+                        <Flex vertical>
+                          <Typography.Text strong>{item.title}</Typography.Text>
+                          <Typography.Text type="secondary">
+                            {item.description}
+                          </Typography.Text>
+                        </Flex>
+                      )}
+                      listStyle={{ width: '100%', height: 500 }}
+                    />
+                  )}
+                </Form.Item>
+                <Form.Item name="scopes" />
+              </Form>
+              <Flex justify="flex-end">
+                <Button
+                  icon={<DeleteFilled />}
+                  type="primary"
+                  loading={updateScopesMutation.loading}
+                  onClick={() => form.submit()}
+                >
+                  Atualizar
+                </Button>
+              </Flex>
+            </Flex>
+          </Collapse.Panel>
+        </Collapse>
+      )}
     </Flex>
   );
 }

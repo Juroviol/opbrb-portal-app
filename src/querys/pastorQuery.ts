@@ -39,6 +39,7 @@ export const GET_PASTOR = gql`
       paymentConfirmationUrl
       ordinationMinutesUrl
       cpfRgUrl
+      scopes
     }
   }
 `;
@@ -250,6 +251,15 @@ export const UPDATE_PASTOR_CREDENTIALS = gql`
     updatePastor(_id: $_id, password: $password, newPassword: $newPassword) {
       _id
       password
+    }
+  }
+`;
+
+export const UPDATE_PASTOR_SCOPES = gql`
+  mutation UpdatePastorScopes($_id: ID!, $scopes: [Scope!]!) {
+    updatePastor(_id: $_id, scopes: $scopes) {
+      _id
+      scopes
     }
   }
 `;
