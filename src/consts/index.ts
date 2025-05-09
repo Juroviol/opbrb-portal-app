@@ -87,6 +87,11 @@ export const SCOPES_DETAILS: {
     description:
       'Permite editar no seu próprio cadastro dados da carteirinha da ordem.',
   },
+  [Scope.CanListAccountAnalysisHistory]: {
+    title: 'Permite listar o histórico de análise',
+    description:
+      'Permite listar no seu próprio cadastro os histórico de análise.',
+  },
   [Scope.CanApprovePastorDocumentationAnalysis]: {
     title: 'Aprovar análise de documentação',
     description: 'Permite aprovar a análise documental do cadastro do pastor.',
