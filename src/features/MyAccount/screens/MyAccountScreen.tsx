@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useMemo } from 'react';
 import {
   BookOutlined,
+  HistoryOutlined,
   HomeOutlined,
   IdcardOutlined,
   LockOutlined,
@@ -29,6 +30,9 @@ function MyAccountScreen() {
       ...(location.pathname.includes('senha') ? ['credentials'] : []),
       ...(location.pathname.includes('carteirinha-ordem')
         ? ['order-card']
+        : []),
+      ...(location.pathname.includes('historico-analise')
+        ? ['analysis-history']
         : []),
     ];
   }, [location.pathname]);
@@ -118,6 +122,11 @@ function MyAccountScreen() {
                     },
                   ]
                 : []),
+              {
+                label: <Link to="historico-analise">Histórico de Análise</Link>,
+                icon: <HistoryOutlined />,
+                key: 'analysis-history',
+              },
             ]}
           />
         </Layout.Sider>
