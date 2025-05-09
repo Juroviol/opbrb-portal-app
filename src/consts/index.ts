@@ -90,7 +90,7 @@ export const SCOPES_DETAILS: {
   [Scope.CanListAccountAnalysisHistory]: {
     title: 'Permite listar o histórico de análise',
     description:
-      'Permite listar no seu próprio cadastro os histórico de análise.',
+      'Permite listar no seu próprio cadastro o histórico de análise.',
   },
   [Scope.CanApprovePastorDocumentationAnalysis]: {
     title: 'Aprovar análise de documentação',
