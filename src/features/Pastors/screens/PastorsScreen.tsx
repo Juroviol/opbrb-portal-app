@@ -1,10 +1,10 @@
 import { useQuery } from '@apollo/client';
 import { GET_PASTORS } from '@querys/pastorQuery';
-import { Breadcrumb, Button, Flex, Table, Tag } from 'antd';
+import { Avatar, Breadcrumb, Button, Flex, Table, Tag } from 'antd';
 import Pastor, { Status } from '../../../models/Pastor.ts';
 import { useCallback, useState } from 'react';
 import dayjs from 'dayjs';
-import { EyeOutlined } from '@ant-design/icons';
+import { EyeOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@contexts/AuthContext';
 import { Scope } from '@models/User';
@@ -50,6 +50,17 @@ function PastorsScreen() {
           current: currentPage,
         }}
         columns={[
+          {
+            title: '',
+            dataIndex: 'pictureUrl',
+            render: (value) => (
+              <Avatar
+                src={`${import.meta.env.VITE_ASSETS_URL}/${value}`}
+                icon={<UserOutlined />}
+                size={80}
+              />
+            ),
+          },
           {
             title: 'Nome',
             dataIndex: 'name',
