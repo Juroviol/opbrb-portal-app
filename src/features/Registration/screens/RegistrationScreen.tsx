@@ -66,10 +66,10 @@ export default function RegistrationScreen() {
   const [currentStep, setCurrentStep] = useState(0);
   const [form] = Form.useForm<FormFields>();
 
-  const queryPastor = useQuery<{ getPastor: Pastor }>(GET_PASTOR, {
+  const queryPastor = useQuery<{ pastor: Pastor }>(GET_PASTOR, {
     skip: !localStorage.getItem('id'),
     variables: {
-      id: localStorage.getItem('id'),
+      _id: localStorage.getItem('id'),
     },
   });
 
@@ -195,7 +195,7 @@ export default function RegistrationScreen() {
   return (
     <Card
       style={{ width: 800, marginBlock: 20 }}
-      loading={!!localStorage.getItem('id') && !queryPastor.data?.getPastor}
+      loading={!!localStorage.getItem('id') && !queryPastor.data?.pastor}
     >
       <Flex vertical style={{ width: '100%' }} justify="center" align="center">
         <img src={LogoEscritoTransparente} height={150} />

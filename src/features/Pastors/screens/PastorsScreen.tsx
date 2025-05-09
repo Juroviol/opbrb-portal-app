@@ -14,15 +14,14 @@ function PastorsScreen() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [size, setSize] = useState(15);
-  const { data } = useQuery<{ getPastors: { total: number; docs: Pastor[] } }>(
-    GET_PASTORS,
-    {
-      variables: {
-        page: currentPage,
-        size,
-      },
-    }
-  );
+  const getPastorsQuery = useQuery<{
+    pastors: { total: number; docs: Pastor[] };
+  }>(GET_PASTORS, {
+    variables: {
+      page: currentPage,
+      size,
+    },
+  });
 
   const handleOnPaginationChange = useCallback((page: number, size: number) => {
     setCurrentPage(page);
@@ -43,9 +42,9 @@ function PastorsScreen() {
         ]}
       />
       <Table
-        dataSource={data?.getPastors.docs}
+        dataSource={getPastorsQuery.data?.pastors.docs}
         pagination={{
-          total: data?.getPastors.total,
+          total: getPastorsQuery?.data?.pastors.total,
           onChange: handleOnPaginationChange,
           pageSize: size,
           current: currentPage,
@@ -71,7 +70,7 @@ function PastorsScreen() {
           ...(hasPermission(Scope.CanDetailPastor)
             ? [
                 {
-                  title: 'Status',
+                  title: 'Situação',
                   dataIndex: 'status',
                   render: (value: Status) => (
                     <Tag

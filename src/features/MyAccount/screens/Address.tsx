@@ -28,7 +28,7 @@ function Address() {
   }>(UPDATE_PASTOR_ADDRESS);
   const query = useQuery(GET_PASTOR_ADDRESS_INFO, {
     variables: {
-      id: user?._id,
+      _id: user?._id,
     },
   });
   const [form] = Form.useForm();
@@ -83,7 +83,7 @@ function Address() {
         form={form}
         onFinish={onFinish}
         onValuesChange={handleValuesChange}
-        initialValues={query.data?.getPastor}
+        initialValues={query.data?.pastor}
       >
         <Row>
           <Col span={6}>

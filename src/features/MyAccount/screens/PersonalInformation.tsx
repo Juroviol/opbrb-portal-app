@@ -29,7 +29,7 @@ function PersonalInformation() {
   }>(UPDATE_PASTOR_PERSONAL_INFO);
   const query = useQuery(GET_PASTOR_PERSONAL_INFO, {
     variables: {
-      id: user?._id,
+      _id: user?._id,
     },
   });
 
@@ -62,9 +62,9 @@ function PersonalInformation() {
         layout="vertical"
         onFinish={onFinish}
         initialValues={{
-          ...(query.data?.getPastor && {
-            ...query.data.getPastor,
-            birthday: dayjs(query.data.getPastor.birthday),
+          ...(query.data?.pastor && {
+            ...query.data.pastor,
+            birthday: dayjs(query.data.pastor.birthday),
           }),
         }}
       >

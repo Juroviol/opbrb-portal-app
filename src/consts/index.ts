@@ -91,17 +91,14 @@ export const SCOPES_DETAILS: {
     title: 'Aprovar análise de documentação',
     description: 'Permite aprovar a análise documental do cadastro do pastor.',
   },
-  [Scope.CanRejectPastorDocumentationAnalysis]: {
-    title: 'Rejeitar análise de documentação',
-    description: 'Permite rejeitar a análise documental do cadastro do pastor.',
-  },
   [Scope.CanApprovePastorFinancialAnalysis]: {
     title: 'Aprovar análise financeira',
     description: 'Permite aprovar a análise financeira do cadastro do pastor.',
   },
-  [Scope.CanRejectPastorFinancialAnalysis]: {
-    title: 'Rejeitar análise financeira',
-    description: 'Permite rejeitar a análise financeira do cadastro do pastor.',
+  [Scope.CanAddPendingItemAnalysis]: {
+    title: 'Pode criar uma pendência pós-análise',
+    description:
+      'Permite criar uma pendência pós-análise no cadastro do pastor.',
   },
   [Scope.CanDownloadPastorRecommendationLetter]: {
     title: 'Baixar carta de recomendação',

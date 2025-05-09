@@ -34,7 +34,7 @@ function Ministry() {
 
   const query = useQuery(GET_PASTOR_MINISTRY_INFO, {
     variables: {
-      id: user?._id,
+      _id: user?._id,
     },
   });
   const handleBeforeUpload = useCallback(() => {
@@ -93,7 +93,7 @@ function Ministry() {
         form={form}
         layout="vertical"
         onFinish={onFinish}
-        initialValues={query.data?.getPastor}
+        initialValues={query.data?.pastor}
       >
         <Row>
           <Col span={24}>
@@ -143,13 +143,13 @@ function Ministry() {
                   label={
                     <Flex gap={5} align="center">
                       <Typography.Text>Ata de ordenação</Typography.Text>
-                      {!!query.data?.getPastor.ordinationMinutesUrl && (
+                      {!!query.data?.pastor.ordinationMinutesUrl && (
                         <Button
                           shape="circle"
                           icon={<DownloadOutlined />}
                           onClick={() =>
                             handleDownload(
-                              query.data.getPastor.ordinationMinutesUrl!
+                              query.data.pastor.ordinationMinutesUrl!
                             )
                           }
                         />
@@ -197,13 +197,13 @@ function Ministry() {
                       <Typography.Text>
                         Carta de recomendação da Igreja
                       </Typography.Text>
-                      {!!query.data?.getPastor.recommendationLetterUrl && (
+                      {!!query.data?.pastor.recommendationLetterUrl && (
                         <Button
                           shape="circle"
                           icon={<DownloadOutlined />}
                           onClick={() =>
                             handleDownload(
-                              query.data.getPastor.recommendationLetterUrl!
+                              query.data.pastor.recommendationLetterUrl!
                             )
                           }
                         />
@@ -249,13 +249,13 @@ function Ministry() {
                       <Typography.Text>
                         Comprovante de pagamento anual
                       </Typography.Text>
-                      {!!query.data?.getPastor.paymentConfirmationUrl && (
+                      {!!query.data?.pastor.paymentConfirmationUrl && (
                         <Button
                           shape="circle"
                           icon={<DownloadOutlined />}
                           onClick={() =>
                             handleDownload(
-                              query.data.getPastor.paymentConfirmationUrl!
+                              query.data.pastor.paymentConfirmationUrl!
                             )
                           }
                         />
@@ -301,12 +301,12 @@ function Ministry() {
                   label={
                     <Flex gap={5} align="center">
                       <Typography.Text>Cópia do CPF/RG</Typography.Text>
-                      {!!query.data?.getPastor.cpfRgUrl && (
+                      {!!query.data?.pastor.cpfRgUrl && (
                         <Button
                           shape="circle"
                           icon={<DownloadOutlined />}
                           onClick={() =>
-                            handleDownload(query.data.getPastor.cpfRgUrl!)
+                            handleDownload(query.data.pastor.cpfRgUrl!)
                           }
                         />
                       )}

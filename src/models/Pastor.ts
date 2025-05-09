@@ -11,6 +11,19 @@ export enum Status {
   ANALYSING = 'Em análise',
 }
 
+export enum AnalysisType {
+  Documentation = 'Documentação',
+  Financial = 'Financeiro',
+}
+
+type Analysis = {
+  author: string;
+  date: Date;
+  type: AnalysisType;
+  approved: boolean;
+  reason?: string;
+};
+
 export default interface Pastor extends User {
   cpf: string;
   maritalStatus: MaritalStatus;
@@ -30,4 +43,5 @@ export default interface Pastor extends User {
   cpfRgUrl?: string;
   createdAt: string;
   status: Status;
+  analysis?: Analysis[];
 }

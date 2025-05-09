@@ -32,6 +32,7 @@ import { debounce, throttle } from 'lodash';
 import OrderCard from '@features/MyAccount/screens/OrderCard.tsx';
 import ProfileScreen from '@features/Profiles/screens/ProfileScreen.tsx';
 import CreateOrEditProfileScreen from '@features/Profiles/screens/CreateOrEditProfileScreen.tsx';
+import HistoryAnalysis from '@features/MyAccount/screens/HistoryAnalysis.tsx';
 
 function App() {
   const navigate = useNavigate();
@@ -208,6 +209,7 @@ function App() {
               {hasPermission(Scope.CanEditAccountOrderCard) && (
                 <Route path="carteirinha-ordem" element={<OrderCard />} />
               )}
+              <Route path="historico-analise" element={<HistoryAnalysis />} />
             </Route>
             {hasPermission(Scope.CanListPastors) && (
               <Route path="/pastores" element={<PastorsScreen />} />

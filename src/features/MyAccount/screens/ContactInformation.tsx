@@ -18,7 +18,7 @@ function ContactInformation() {
   );
   const query = useQuery(GET_PASTOR_CONTACT_INFO, {
     variables: {
-      id: user?._id,
+      _id: user?._id,
     },
   });
 
@@ -44,7 +44,7 @@ function ContactInformation() {
       <Form
         layout="vertical"
         onFinish={onFinish}
-        initialValues={query.data?.getPastor}
+        initialValues={query.data?.pastor}
       >
         <Row gutter={10}>
           <Col span={12}>

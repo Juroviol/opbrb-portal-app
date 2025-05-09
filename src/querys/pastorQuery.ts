@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export const GET_PASTORS = gql`
   query GetPastors($page: Int!, $size: Int!) {
-    getPastors(page: $page, size: $size) {
+    pastors(page: $page, size: $size) {
       total
       docs {
         _id
@@ -17,8 +17,8 @@ export const GET_PASTORS = gql`
 `;
 
 export const GET_PASTOR = gql`
-  query GetPastor($id: ID!) {
-    getPastor(id: $id) {
+  query GetPastor($_id: ID!) {
+    pastor(_id: $_id) {
       _id
       name
       cpf
@@ -40,13 +40,21 @@ export const GET_PASTOR = gql`
       ordinationMinutesUrl
       cpfRgUrl
       scopes
+      pictureUrl
+      analysis {
+        reason
+        author
+        approved
+        date
+        type
+      }
     }
   }
 `;
 
 export const GET_PASTOR_PERSONAL_INFO = gql`
-  query GetPastor($id: ID!) {
-    getPastor(id: $id) {
+  query GetPastor($_id: ID!) {
+    pastor(_id: $_id) {
       name
       cpf
       birthday
@@ -56,8 +64,8 @@ export const GET_PASTOR_PERSONAL_INFO = gql`
 `;
 
 export const GET_PASTOR_ADDRESS_INFO = gql`
-  query GetPastor($id: ID!) {
-    getPastor(id: $id) {
+  query GetPastor($_id: ID!) {
+    pastor(_id: $_id) {
       street
       number
       city
@@ -68,9 +76,17 @@ export const GET_PASTOR_ADDRESS_INFO = gql`
   }
 `;
 
+export const GET_PASTOR_ANALYSIS_HISTORY = gql`
+  query GetPastor($_id: ID!) {
+    pastor(_id: $_id) {
+      analysis
+    }
+  }
+`;
+
 export const GET_PASTOR_CONTACT_INFO = gql`
-  query GetPastor($id: ID!) {
-    getPastor(id: $id) {
+  query GetPastor($_id: ID!) {
+    pastor(_id: $_id) {
       cellPhone
       email
     }
@@ -78,8 +94,8 @@ export const GET_PASTOR_CONTACT_INFO = gql`
 `;
 
 export const GET_PASTOR_MINISTRY_INFO = gql`
-  query GetPastor($id: ID!) {
-    getPastor(id: $id) {
+  query GetPastor($_id: ID!) {
+    pastor(_id: $_id) {
       church
       ordinanceTime
       recommendationLetterUrl
@@ -137,6 +153,12 @@ export const CREATE_PASTOR = gql`
     ) {
       _id
     }
+  }
+`;
+
+export const DELETE_PASTOR = gql`
+  mutation DeletePastor($_id: ID!) {
+    deletePastor(_id: $_id)
   }
 `;
 
@@ -261,5 +283,21 @@ export const UPDATE_PASTOR_SCOPES = gql`
       _id
       scopes
     }
+  }
+`;
+
+export const APPROVE_PASTOR_ANALYSIS = gql`
+  mutation ApprovePastorAnalysis($_id: ID!, $type: AnalysisType!) {
+    approvePastorAnalysis(_id: $_id, type: $type)
+  }
+`;
+
+export const CREATE_PASTOR_PENDING_ITEM_ANALYSIS = gql`
+  mutation CreatePastorPendingItemAnalysis(
+    $_id: ID!
+    $type: AnalysisType!
+    $reason: String!
+  ) {
+    createPastorPendingItemAnalysis(_id: $_id, type: $type, reason: $reason)
   }
 `;
