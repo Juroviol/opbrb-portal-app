@@ -48,3 +48,9 @@ export const GET_PROFILE = gql`
     }
   }
 `;
+
+export const ASSIGN_PROFILE_PASTORS = gql`
+  mutation AssignProfilePastors($profile: ID!, $pastors: [ID!]!) {
+    assignProfileToPastors(profile: $profile, pastors: $pastors)
+  }
+`;

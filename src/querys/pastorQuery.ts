@@ -17,6 +17,18 @@ export const GET_PASTORS = gql`
   }
 `;
 
+export const GET_PASTORS_NAME = gql`
+  query GetPastorsName($page: Int!, $size: Int!, $name: String) {
+    pastors(page: $page, size: $size, name: $name) {
+      total
+      docs {
+        _id
+        name
+      }
+    }
+  }
+`;
+
 export const GET_PASTOR = gql`
   query GetPastor($_id: ID!) {
     pastor(_id: $_id) {

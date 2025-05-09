@@ -31,7 +31,7 @@ import {
   DownloadOutlined,
   InfoCircleFilled,
 } from '@ant-design/icons';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAuth } from '@contexts/AuthContext.tsx';
 import { Scope } from '@models/User.ts';
 import { GET_SCOPES } from '@querys/scopeQuery.ts';
@@ -64,6 +64,10 @@ function PastorDetailScreen() {
       _id: params.id,
     },
   });
+
+  useEffect(() => {
+    getPastorQuery.refetch();
+  }, [getPastorQuery]);
 
   const handleDownload = useCallback((url: string) => {
     const link = document.createElement('a');
