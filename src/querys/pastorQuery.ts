@@ -80,7 +80,13 @@ export const GET_PASTOR_ADDRESS_INFO = gql`
 export const GET_PASTOR_ANALYSIS_HISTORY = gql`
   query GetPastor($_id: ID!) {
     pastor(_id: $_id) {
-      analysis
+      analysis {
+        reason
+        author
+        approved
+        date
+        type
+      }
     }
   }
 `;
