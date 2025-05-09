@@ -3,6 +3,7 @@ import {
   DownOutlined,
   LogoutOutlined,
   TeamOutlined,
+  UnlockOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import LogoTransparent from '@assets/logo_transparente.png';
@@ -14,21 +15,23 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import Login from '@features/Login/screens/Login.tsx';
+import LoginScreen from '@features/Login/screens/LoginScreen.tsx';
 import RedirectRoute from './components/RedirectRoute.tsx';
-import Registration from '@features/Registration/screens/Registration.tsx';
-import Profile from '@features/Profile/screens/Profile.tsx';
-import Pastors from '@features/Pastors/screens/Pastors.tsx';
-import PastorDetail from '@features/PastorDetail/screens/PastorDetail.tsx';
+import RegistrationScreen from '@features/Registration/screens/RegistrationScreen.tsx';
+import MyAccountScreen from '@features/MyAccount/screens/MyAccountScreen.tsx';
+import PastorsScreen from '@features/Pastors/screens/PastorsScreen.tsx';
+import PastorDetailScreen from '@features/Pastors/screens/PastorDetailScreen.tsx';
 import { Scope } from './models/User.ts';
-import PersonalInformation from '@features/Profile/screens/PersonalInformation.tsx';
-import Address from '@features/Profile/screens/Address.tsx';
-import ContactInformation from '@features/Profile/screens/ContactInformation.tsx';
-import Ministry from '@features/Profile/screens/Ministry.tsx';
-import Credentials from '@features/Profile/screens/Credentials.tsx';
+import PersonalInformation from '@features/MyAccount/screens/PersonalInformation.tsx';
+import Address from '@features/MyAccount/screens/Address.tsx';
+import ContactInformation from '@features/MyAccount/screens/ContactInformation.tsx';
+import Ministry from '@features/MyAccount/screens/Ministry.tsx';
+import Credentials from '@features/MyAccount/screens/Credentials.tsx';
 import { useCallback, useState } from 'react';
 import { debounce, throttle } from 'lodash';
-import OrderCard from '@features/Profile/screens/OrderCard.tsx';
+import OrderCard from '@features/MyAccount/screens/OrderCard.tsx';
+import ProfileScreen from '@features/Profiles/screens/ProfileScreen.tsx';
+import CreateOrEditProfileScreen from '@features/Profiles/screens/CreateOrEditProfileScreen.tsx';
 
 function App() {
   const navigate = useNavigate();
@@ -57,8 +60,8 @@ function App() {
       >
         <Routes>
           <Route path="" element={<RedirectRoute to="/login" />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/registro" element={<Registration />} />
+          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/registro" element={<RegistrationScreen />} />
           <Route path="*" element={<RedirectRoute to="/login" />} />
         </Routes>
       </Flex>
@@ -90,6 +93,7 @@ function App() {
           selectedKeys={[
             ...(location.pathname.includes('pastor') ? ['pastors'] : []),
             ...(location.pathname.includes('minha-conta') ? ['profile'] : []),
+            ...(location.pathname.includes('perfis') ? ['profiles'] : []),
           ]}
           mode="inline"
           items={[
@@ -106,6 +110,15 @@ function App() {
                     label: <Link to="/pastores">Pastores</Link>,
                     key: 'pastors',
                     icon: <TeamOutlined />,
+                  },
+                ]
+              : []),
+            ...(hasPermission(Scope.CanListProfileScopes)
+              ? [
+                  {
+                    label: <Link to="/perfis">Perfis</Link>,
+                    key: 'profiles',
+                    icon: <UnlockOutlined />,
                   },
                 ]
               : []),
@@ -170,37 +183,52 @@ function App() {
                 />
               }
             />
-            <Route path="/minha-conta" element={<Profile />}>
-              {hasPermission(Scope.CanEditProfilePersonalInfo) && (
+            <Route path="/minha-conta" element={<MyAccountScreen />}>
+              {hasPermission(Scope.CanEditAccountPersonalInfo) && (
                 <Route
                   path="informacoes-pessoais"
                   element={<PersonalInformation />}
                 />
               )}
-              {hasPermission(Scope.CanEditProfileAddress) && (
+              {hasPermission(Scope.CanEditAccountAddress) && (
                 <Route path="endereco" element={<Address />} />
               )}
-              {hasPermission(Scope.CanEditProfileContactInfo) && (
+              {hasPermission(Scope.CanEditAccountContactInfo) && (
                 <Route
                   path="informacoes-contato"
                   element={<ContactInformation />}
                 />
               )}
-              {hasPermission(Scope.CanEditProfileMinistry) && (
+              {hasPermission(Scope.CanEditAccountMinistry) && (
                 <Route path="ministerio" element={<Ministry />} />
               )}
-              {hasPermission(Scope.CanEditProfileCredentials) && (
+              {hasPermission(Scope.CanEditAccountCredentials) && (
                 <Route path="senha" element={<Credentials />} />
               )}
-              {hasPermission(Scope.CanEditProfileOrderCard) && (
+              {hasPermission(Scope.CanEditAccountOrderCard) && (
                 <Route path="carteirinha-ordem" element={<OrderCard />} />
               )}
             </Route>
             {hasPermission(Scope.CanListPastors) && (
-              <Route path="/pastores" element={<Pastors />} />
+              <Route path="/pastores" element={<PastorsScreen />} />
             )}
             {hasPermission(Scope.CanDetailPastor) && (
-              <Route path="/pastor/:id" element={<PastorDetail />} />
+              <Route path="/pastor/:id" element={<PastorDetailScreen />} />
+            )}
+            {hasPermission(Scope.CanListProfileScopes) && (
+              <Route path="/perfis" element={<ProfileScreen />} />
+            )}
+            {hasPermission(Scope.CanEditProfileScopes) && (
+              <Route
+                path="/perfis/:id"
+                element={<CreateOrEditProfileScreen />}
+              />
+            )}
+            {hasPermission(Scope.CanCreateProfileScopes) && (
+              <Route
+                path="/perfis/novo"
+                element={<CreateOrEditProfileScreen />}
+              />
             )}
           </Routes>
         </Layout.Content>

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_PASTOR } from '@querys/pastorQuery';
+import { GET_PASTOR } from '@querys/pastorQuery.ts';
 import { Link, useParams } from 'react-router-dom';
 import {
   Breadcrumb,
@@ -10,14 +10,14 @@ import {
   Tag,
   Typography,
 } from 'antd';
-import Pastor, { MaritalStatus, Status } from '../../../models/Pastor.ts';
+import Pastor, { MaritalStatus, Status } from '@models/Pastor.ts';
 import dayjs from 'dayjs';
 import { DownloadOutlined } from '@ant-design/icons';
 import { useCallback, useMemo } from 'react';
-import { useAuth } from '@contexts/AuthContext';
-import { Scope } from '@models/User';
+import { useAuth } from '@contexts/AuthContext.tsx';
+import { Scope } from '@models/User.ts';
 
-function PastorDetail() {
+function PastorDetailScreen() {
   const { hasPermission } = useAuth();
   const params = useParams();
   const { loading, data } = useQuery<{ getPastor: Pastor }>(GET_PASTOR, {
@@ -166,7 +166,7 @@ function PastorDetail() {
   }, [data]);
 
   return (
-    <Flex vertical gap={10}>
+    <Flex vertical gap={30}>
       <Breadcrumb
         items={[
           { title: 'Home' },
@@ -213,4 +213,4 @@ function PastorDetail() {
   );
 }
 
-export default PastorDetail;
+export default PastorDetailScreen;

@@ -62,7 +62,7 @@ type FormFields = {
   cpfRg: RcFile;
 };
 
-export default function Registration() {
+export default function RegistrationScreen() {
   const [currentStep, setCurrentStep] = useState(0);
   const [form] = Form.useForm<FormFields>();
 

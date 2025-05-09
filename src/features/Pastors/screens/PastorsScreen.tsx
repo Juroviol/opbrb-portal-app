@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@contexts/AuthContext';
 import { Scope } from '@models/User';
 
-function Pastors() {
+function PastorsScreen() {
   const { hasPermission } = useAuth();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +33,7 @@ function Pastors() {
     navigate(`/pastor/${id}`);
   }, []);
   return (
-    <Flex vertical gap={10}>
+    <Flex vertical gap={30}>
       <Breadcrumb
         items={[
           { title: 'Home' },
@@ -110,4 +110,4 @@ function Pastors() {
   );
 }
 
-export default Pastors;
+export default PastorsScreen;

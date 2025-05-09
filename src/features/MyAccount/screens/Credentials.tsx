@@ -1,9 +1,10 @@
 import { Button, Card, Col, Form, Input, notification, Row } from 'antd';
 import { required } from '@validators';
-import { UPDATE_PASTOR_CREDENTIALS } from '@querys/pastorQuery';
+import { UPDATE_PASTOR_CREDENTIALS } from '@querys/pastorQuery.ts';
 import { ApolloError, useMutation } from '@apollo/client';
 import { useCallback } from 'react';
-import { useAuth } from '@contexts/AuthContext';
+import { useAuth } from '@contexts/AuthContext.tsx';
+import { SaveFilled } from '@ant-design/icons';
 
 function Credentials() {
   const { user } = useAuth();
@@ -58,7 +59,12 @@ function Credentials() {
         </Row>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button type="primary" htmlType="submit" loading={mutation.loading}>
+            <Button
+              icon={<SaveFilled />}
+              type="primary"
+              htmlType="submit"
+              loading={mutation.loading}
+            >
               Atualizar
             </Button>
           </Col>

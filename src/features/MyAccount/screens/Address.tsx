@@ -17,8 +17,9 @@ import {
   GET_PASTOR_ADDRESS_INFO,
   UPDATE_PASTOR_ADDRESS,
 } from '@querys/pastorQuery.ts';
-import { useAuth } from '@contexts/AuthContext';
-import Pastor from '../../../models/Pastor';
+import { useAuth } from '@contexts/AuthContext.tsx';
+import Pastor from '@models/Pastor.ts';
+import { SaveFilled } from '@ant-design/icons';
 
 function Address() {
   const { user } = useAuth();
@@ -154,7 +155,12 @@ function Address() {
         </Row>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button type="primary" htmlType="submit" loading={mutation.loading}>
+            <Button
+              icon={<SaveFilled />}
+              type="primary"
+              htmlType="submit"
+              loading={mutation.loading}
+            >
               Atualizar
             </Button>
           </Col>

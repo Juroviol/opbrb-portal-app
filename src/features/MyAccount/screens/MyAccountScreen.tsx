@@ -9,10 +9,10 @@ import {
   PhoneOutlined,
   SolutionOutlined,
 } from '@ant-design/icons';
-import { useAuth } from '@contexts/AuthContext';
-import { Scope } from '@models/User';
+import { useAuth } from '@contexts/AuthContext.tsx';
+import { Scope } from '@models/User.ts';
 
-function Profile() {
+function MyAccountScreen() {
   const { hasPermission } = useAuth();
   const location = useLocation();
 
@@ -33,7 +33,7 @@ function Profile() {
     ];
   }, [location.pathname]);
   return (
-    <Flex vertical gap={10}>
+    <Flex vertical gap={30}>
       <Breadcrumb
         items={[
           { title: 'Home' },
@@ -56,7 +56,7 @@ function Profile() {
             selectedKeys={selectedMenuKeys}
             mode="inline"
             items={[
-              ...(hasPermission(Scope.CanEditProfilePersonalInfo)
+              ...(hasPermission(Scope.CanEditAccountPersonalInfo)
                 ? [
                     {
                       label: (
@@ -69,7 +69,7 @@ function Profile() {
                     },
                   ]
                 : []),
-              ...(hasPermission(Scope.CanEditProfileAddress)
+              ...(hasPermission(Scope.CanEditAccountAddress)
                 ? [
                     {
                       label: <Link to="endereco">Endereço</Link>,
@@ -78,7 +78,7 @@ function Profile() {
                     },
                   ]
                 : []),
-              ...(hasPermission(Scope.CanEditProfileContactInfo)
+              ...(hasPermission(Scope.CanEditAccountContactInfo)
                 ? [
                     {
                       label: (
@@ -91,7 +91,7 @@ function Profile() {
                     },
                   ]
                 : []),
-              ...(hasPermission(Scope.CanEditProfileMinistry)
+              ...(hasPermission(Scope.CanEditAccountMinistry)
                 ? [
                     {
                       label: <Link to="ministerio">Ministério</Link>,
@@ -100,7 +100,7 @@ function Profile() {
                     },
                   ]
                 : []),
-              ...(hasPermission(Scope.CanEditProfileOrderCard)
+              ...(hasPermission(Scope.CanEditAccountOrderCard)
                 ? [
                     {
                       label: <Link to="carteirinha-ordem">Carteirinha</Link>,
@@ -109,7 +109,7 @@ function Profile() {
                     },
                   ]
                 : []),
-              ...(hasPermission(Scope.CanEditProfileCredentials)
+              ...(hasPermission(Scope.CanEditAccountCredentials)
                 ? [
                     {
                       label: <Link to="senha">Senha</Link>,
@@ -129,4 +129,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default MyAccountScreen;

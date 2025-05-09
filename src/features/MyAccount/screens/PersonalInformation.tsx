@@ -15,11 +15,12 @@ import { useMutation, useQuery } from '@apollo/client';
 import {
   GET_PASTOR_PERSONAL_INFO,
   UPDATE_PASTOR_PERSONAL_INFO,
-} from '@querys/pastorQuery';
-import { useAuth } from '@contexts/AuthContext';
+} from '@querys/pastorQuery.ts';
+import { useAuth } from '@contexts/AuthContext.tsx';
 import dayjs from 'dayjs';
 import { useCallback } from 'react';
-import Pastor, { MaritalStatus } from '../../../models/Pastor.ts';
+import Pastor, { MaritalStatus } from '@models/Pastor.ts';
+import { SaveFilled } from '@ant-design/icons';
 
 function PersonalInformation() {
   const { user } = useAuth();
@@ -132,7 +133,12 @@ function PersonalInformation() {
         </Row>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button type="primary" htmlType="submit" loading={mutation.loading}>
+            <Button
+              icon={<SaveFilled />}
+              type="primary"
+              htmlType="submit"
+              loading={mutation.loading}
+            >
               Atualizar
             </Button>
           </Col>

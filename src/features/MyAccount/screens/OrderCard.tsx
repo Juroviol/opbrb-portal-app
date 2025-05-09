@@ -2,10 +2,11 @@ import { Button, Card, Col, Form, notification, Row, Upload } from 'antd';
 import { fileSize } from '@validators';
 import { RcFile } from 'antd/es/upload/interface';
 import Picture3_4 from '@assets/3_4.webp';
-import { useAuth } from '@contexts/AuthContext';
+import { useAuth } from '@contexts/AuthContext.tsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { UPDATE_PASTOR_ORDER_CARD } from '@querys/pastorQuery';
+import { UPDATE_PASTOR_ORDER_CARD } from '@querys/pastorQuery.ts';
+import { SaveFilled } from '@ant-design/icons';
 
 export default function OrderCard() {
   const [form] = Form.useForm();
@@ -157,7 +158,12 @@ export default function OrderCard() {
         </Row>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button type="primary" htmlType="submit" loading={mutation.loading}>
+            <Button
+              icon={<SaveFilled />}
+              type="primary"
+              htmlType="submit"
+              loading={mutation.loading}
+            >
               Atualizar
             </Button>
           </Col>

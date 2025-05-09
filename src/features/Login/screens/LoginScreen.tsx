@@ -16,7 +16,7 @@ import { AUTHENTICATE } from '@querys/userQuery';
 import { useCallback } from 'react';
 import { useAuth } from '@contexts/AuthContext';
 
-export default function Login() {
+export default function LoginScreen() {
   const navigate = useNavigate();
   const { handleLoginData } = useAuth();
 

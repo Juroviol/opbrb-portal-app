@@ -5,10 +5,11 @@ import { useMutation, useQuery } from '@apollo/client';
 import {
   GET_PASTOR_CONTACT_INFO,
   UPDATE_PASTOR_CONTACT_INFO,
-} from '@querys/pastorQuery';
-import { useAuth } from '@contexts/AuthContext';
-import Pastor from '@models/Pastor';
+} from '@querys/pastorQuery.ts';
+import { useAuth } from '@contexts/AuthContext.tsx';
+import Pastor from '@models/Pastor.ts';
 import { useCallback } from 'react';
+import { SaveFilled } from '@ant-design/icons';
 
 function ContactInformation() {
   const { user } = useAuth();
@@ -69,7 +70,12 @@ function ContactInformation() {
         </Row>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button type="primary" htmlType="submit" loading={mutation.loading}>
+            <Button
+              icon={<SaveFilled />}
+              type="primary"
+              htmlType="submit"
+              loading={mutation.loading}
+            >
               Atualizar
             </Button>
           </Col>

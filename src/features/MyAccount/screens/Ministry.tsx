@@ -13,14 +13,18 @@ import {
 } from 'antd';
 import { fileSize, required } from '@validators';
 import { MINISTRY_ORDINANCE_TIME } from '@consts';
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
+import {
+  DownloadOutlined,
+  SaveFilled,
+  UploadOutlined,
+} from '@ant-design/icons';
 import { useCallback } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import {
   GET_PASTOR_MINISTRY_INFO,
   UPDATE_PASTOR_MINISTRY_INFO,
-} from '@querys/pastorQuery';
-import { useAuth } from '@contexts/AuthContext';
+} from '@querys/pastorQuery.ts';
+import { useAuth } from '@contexts/AuthContext.tsx';
 import { RcFile } from 'antd/es/upload/interface';
 
 function Ministry() {
@@ -332,7 +336,12 @@ function Ministry() {
         </Row>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button type="primary" htmlType="submit" loading={mutation.loading}>
+            <Button
+              icon={<SaveFilled />}
+              type="primary"
+              htmlType="submit"
+              loading={mutation.loading}
+            >
               Atualizar
             </Button>
           </Col>
