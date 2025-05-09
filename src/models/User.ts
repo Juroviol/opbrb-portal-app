@@ -1,8 +1,3 @@
-export enum Role {
-  ADMIN = 'ADMIN',
-  PASTOR = 'PASTOR',
-}
-
 export enum Scope {
   CanListPastors = 'CanListPastors',
   CanDeletePastor = 'CanDeletePastor',
@@ -13,6 +8,7 @@ export enum Scope {
   CanEditAccountContactInfo = 'CanEditAccountContactInfo',
   CanEditAccountMinistry = 'CanEditAccountMinistry',
   CanEditAccountOrderCard = 'CanEditAccountOrderCard',
+  CanListAccountAnalysisHistory = 'CanListAccountAnalysisHistory',
   CanApprovePastorDocumentationAnalysis = 'CanApprovePastorDocumentationAnalysis',
   CanApprovePastorFinancialAnalysis = 'CanApprovePastorFinancialAnalysis',
   CanAddPendingItemAnalysis = 'CanAddPendingItemAnalysis',
@@ -31,7 +27,6 @@ export default interface User {
   _id: string;
   email: string;
   name: string;
-  role: Role;
   scopes: Scope[];
   pictureUrl?: string;
 }

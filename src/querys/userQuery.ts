@@ -6,7 +6,6 @@ export const GET_LOGGED_USER = gql`
       _id
       name
       email
-      role
       scopes
       pictureUrl
     }

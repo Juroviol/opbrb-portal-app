@@ -122,11 +122,17 @@ function MyAccountScreen() {
                     },
                   ]
                 : []),
-              {
-                label: <Link to="historico-analise">Histórico de Análise</Link>,
-                icon: <HistoryOutlined />,
-                key: 'analysis-history',
-              },
+              ...(hasPermission(Scope.CanListAccountAnalysisHistory)
+                ? [
+                    {
+                      label: (
+                        <Link to="historico-analise">Histórico de Análise</Link>
+                      ),
+                      icon: <HistoryOutlined />,
+                      key: 'analysis-history',
+                    },
+                  ]
+                : []),
             ]}
           />
         </Layout.Sider>

@@ -27,7 +27,7 @@ import Address from '@features/MyAccount/screens/Address.tsx';
 import ContactInformation from '@features/MyAccount/screens/ContactInformation.tsx';
 import Ministry from '@features/MyAccount/screens/Ministry.tsx';
 import Credentials from '@features/MyAccount/screens/Credentials.tsx';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { debounce, throttle } from 'lodash';
 import OrderCard from '@features/MyAccount/screens/OrderCard.tsx';
 import ProfileScreen from '@features/Profiles/screens/ProfileScreen.tsx';
@@ -47,6 +47,18 @@ function App() {
   const onMouseLeave = useCallback(() => {
     if (!collapsed) setCollapsed(true);
   }, [collapsed]);
+
+  const hasMyAccountAccess = useMemo(
+    () =>
+      hasPermission(Scope.CanEditAccountPersonalInfo) ||
+      hasPermission(Scope.CanEditAccountAddress) ||
+      hasPermission(Scope.CanEditAccountContactInfo) ||
+      hasPermission(Scope.CanEditAccountMinistry) ||
+      hasPermission(Scope.CanEditAccountCredentials) ||
+      hasPermission(Scope.CanEditAccountOrderCard) ||
+      hasPermission(Scope.CanListAccountAnalysisHistory),
+    [hasPermission]
+  );
 
   if (!user) {
     return (
@@ -98,7 +110,7 @@ function App() {
           ]}
           mode="inline"
           items={[
-            ...(hasPermission(Scope.CanListPastors)
+            ...(hasMyAccountAccess
               ? [
                   {
                     key: 'profile',
@@ -107,6 +119,10 @@ function App() {
                     onClick: () =>
                       navigate('/minha-conta/informacoes-pessoais'),
                   },
+                ]
+              : []),
+            ...(hasPermission(Scope.CanListPastors)
+              ? [
                   {
                     label: <Link to="/pastores">Pastores</Link>,
                     key: 'pastors',
@@ -143,13 +159,17 @@ function App() {
             <Dropdown
               menu={{
                 items: [
-                  {
-                    key: 'profile',
-                    label: 'Minha Conta',
-                    icon: <UserOutlined />,
-                    onClick: () =>
-                      navigate('/minha-conta/informacoes-pessoais'),
-                  },
+                  ...(hasMyAccountAccess
+                    ? [
+                        {
+                          key: 'profile',
+                          label: 'Minha Conta',
+                          icon: <UserOutlined />,
+                          onClick: () =>
+                            navigate('/minha-conta/informacoes-pessoais'),
+                        },
+                      ]
+                    : []),
                   {
                     key: 'logout',
                     label: 'Sair',
@@ -184,33 +204,40 @@ function App() {
                 />
               }
             />
-            <Route path="/minha-conta" element={<MyAccountScreen />}>
-              {hasPermission(Scope.CanEditAccountPersonalInfo) && (
-                <Route
-                  path="informacoes-pessoais"
-                  element={<PersonalInformation />}
-                />
-              )}
-              {hasPermission(Scope.CanEditAccountAddress) && (
-                <Route path="endereco" element={<Address />} />
-              )}
-              {hasPermission(Scope.CanEditAccountContactInfo) && (
-                <Route
-                  path="informacoes-contato"
-                  element={<ContactInformation />}
-                />
-              )}
-              {hasPermission(Scope.CanEditAccountMinistry) && (
-                <Route path="ministerio" element={<Ministry />} />
-              )}
-              {hasPermission(Scope.CanEditAccountCredentials) && (
-                <Route path="senha" element={<Credentials />} />
-              )}
-              {hasPermission(Scope.CanEditAccountOrderCard) && (
-                <Route path="carteirinha-ordem" element={<OrderCard />} />
-              )}
-              <Route path="historico-analise" element={<HistoryAnalysis />} />
-            </Route>
+            {hasMyAccountAccess && (
+              <Route path="/minha-conta" element={<MyAccountScreen />}>
+                {hasPermission(Scope.CanEditAccountPersonalInfo) && (
+                  <Route
+                    path="informacoes-pessoais"
+                    element={<PersonalInformation />}
+                  />
+                )}
+                {hasPermission(Scope.CanEditAccountAddress) && (
+                  <Route path="endereco" element={<Address />} />
+                )}
+                {hasPermission(Scope.CanEditAccountContactInfo) && (
+                  <Route
+                    path="informacoes-contato"
+                    element={<ContactInformation />}
+                  />
+                )}
+                {hasPermission(Scope.CanEditAccountMinistry) && (
+                  <Route path="ministerio" element={<Ministry />} />
+                )}
+                {hasPermission(Scope.CanEditAccountCredentials) && (
+                  <Route path="senha" element={<Credentials />} />
+                )}
+                {hasPermission(Scope.CanEditAccountOrderCard) && (
+                  <Route path="carteirinha-ordem" element={<OrderCard />} />
+                )}
+                {hasPermission(Scope.CanListAccountAnalysisHistory) && (
+                  <Route
+                    path="historico-analise"
+                    element={<HistoryAnalysis />}
+                  />
+                )}
+              </Route>
+            )}
             {hasPermission(Scope.CanListPastors) && (
               <Route path="/pastores" element={<PastorsScreen />} />
             )}
