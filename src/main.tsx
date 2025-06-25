@@ -55,6 +55,7 @@ createRoot(document.getElementById('root')!).render(
         },
         components: {
           Menu: {
+            activeBarBorderWidth: 0,
             dangerItemActiveBg: 'rgb(255,242,240)',
             itemSelectedBg: 'rgb(244,233,232)',
             subMenuItemBg: 'rgba(0,0,0,0.01)',
