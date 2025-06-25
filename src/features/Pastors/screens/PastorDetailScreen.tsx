@@ -299,7 +299,7 @@ function PastorDetailScreen() {
         findKey(AnalysisType, (value) => value === AnalysisType.Financial)
     );
     return (
-      hasPermission(Scope.CanApprovePastorDocumentationAnalysis) &&
+      hasPermission(Scope.CanApprovePastorFinancialAnalysis) &&
       Status.APPROVED !== getPastorQuery.data?.pastor.status &&
       !lastFinancialAnalysis?.approved
     );
