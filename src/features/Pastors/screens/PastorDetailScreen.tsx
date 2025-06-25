@@ -471,11 +471,12 @@ function PastorDetailScreen() {
                 {
                   title: 'Observação',
                   dataIndex: 'reason',
-                  render: (reason) => (
-                    <Popover content={reason}>
-                      <InfoCircleFilled />
-                    </Popover>
-                  ),
+                  render: (reason) =>
+                    reason ? (
+                      <Popover content={reason}>
+                        <InfoCircleFilled />
+                      </Popover>
+                    ) : null,
                 },
               ]}
             />
