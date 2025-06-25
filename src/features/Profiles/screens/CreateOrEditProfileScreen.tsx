@@ -68,7 +68,9 @@ function CreateOrEditProfileScreen() {
       notification.success({
         message: 'Perfil criado com sucesso!',
       });
-      navigate('/perfis');
+      navigate('/perfis', {
+        state: { refresh: true },
+      });
     }
   }, [form, params.id]);
 

@@ -1,4 +1,12 @@
-import { Breadcrumb, Button, Flex, notification, Table } from 'antd';
+import {
+  Breadcrumb,
+  Button,
+  Empty,
+  Flex,
+  notification,
+  Spin,
+  Table,
+} from 'antd';
 import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_PROFILE, GET_PROFILES } from '@querys/profileQuery.ts';
 import Profile from '@models/Profile.ts';
@@ -9,13 +17,14 @@ import {
   PlusCircleFilled,
   TeamOutlined,
 } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@contexts/AuthContext.tsx';
 import { Scope } from '@models/User.ts';
 import AssignProfilePastorsModal from '@features/Profiles/components/AssignProfilePastorsModal.tsx';
 
 export default function ProfileScreen() {
   const { hasPermission } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [profileIdToAssignToPastors, setProfileIdToAssignToPastors] =
@@ -35,8 +44,8 @@ export default function ProfileScreen() {
   });
 
   useEffect(() => {
-    getProfilesQuery.refetch();
-  }, []);
+    if (location.state?.refresh) getProfilesQuery.refetch();
+  }, [location.state?.refresh]);
 
   const handleOnPaginationChange = useCallback((page: number, size: number) => {
     setCurrentPage(page);
@@ -90,6 +99,19 @@ export default function ProfileScreen() {
             onChange: handleOnPaginationChange,
             pageSize: size,
             current: currentPage,
+          }}
+          loading={
+            !!getProfilesQuery.data?.profiles.docs.length &&
+            getProfilesQuery.loading
+          }
+          locale={{
+            emptyText: getProfilesQuery.loading ? (
+              <Flex justify="center">
+                <Spin />
+              </Flex>
+            ) : (
+              <Empty description="Sem dados" />
+            ),
           }}
           columns={[
             {

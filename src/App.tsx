@@ -1,4 +1,4 @@
-import { Avatar, Divider, Dropdown, Flex, Layout, Menu } from 'antd';
+import { Avatar, Divider, Dropdown, Flex, Layout, Menu, Spin } from 'antd';
 import {
   DownOutlined,
   LogoutOutlined,
@@ -60,7 +60,7 @@ function App() {
     [hasPermission]
   );
 
-  if (!user) {
+  if (!localStorage.getItem('accessToken')) {
     return (
       <Flex
         style={{
@@ -77,6 +77,22 @@ function App() {
           <Route path="/registro" element={<RegistrationScreen />} />
           <Route path="*" element={<RedirectRoute to="/login" />} />
         </Routes>
+      </Flex>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Flex
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Spin />
       </Flex>
     );
   }

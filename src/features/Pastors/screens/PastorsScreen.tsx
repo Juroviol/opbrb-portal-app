@@ -1,6 +1,15 @@
 import { useQuery } from '@apollo/client';
 import { GET_PASTORS } from '@querys/pastorQuery';
-import { Avatar, Breadcrumb, Button, Flex, Table, Tag } from 'antd';
+import {
+  Avatar,
+  Breadcrumb,
+  Button,
+  Empty,
+  Flex,
+  Spin,
+  Table,
+  Tag,
+} from 'antd';
 import Pastor, { Status } from '../../../models/Pastor.ts';
 import { useCallback, useState } from 'react';
 import dayjs from 'dayjs';
@@ -31,6 +40,7 @@ function PastorsScreen() {
   const handleOnDetail = useCallback((id: string) => {
     navigate(`/pastor/${id}`);
   }, []);
+
   return (
     <Flex vertical gap={30}>
       <Breadcrumb
@@ -48,6 +58,18 @@ function PastorsScreen() {
           onChange: handleOnPaginationChange,
           pageSize: size,
           current: currentPage,
+        }}
+        loading={
+          !!getPastorsQuery.data?.pastors.docs.length && getPastorsQuery.loading
+        }
+        locale={{
+          emptyText: getPastorsQuery.loading ? (
+            <Flex justify="center">
+              <Spin />
+            </Flex>
+          ) : (
+            <Empty description="Sem dados" />
+          ),
         }}
         columns={[
           {
