@@ -83,7 +83,7 @@ export const SCOPES_DETAILS: {
       'Permite editar no seu próprio cadastro dados referentes ao ministério exercido.',
   },
   [Scope.CanEditAccountOrderCard]: {
-    title: 'Editar informaçãoes da carteirinha',
+    title: 'Editar carteirinha',
     description:
       'Permite editar no seu próprio cadastro dados da carteirinha da ordem.',
   },
