@@ -61,7 +61,7 @@ export const SCOPES_DETAILS: {
   [Scope.CanEditAccountPersonalInfo]: {
     title: 'Editar dados pessoais do cadastro',
     description:
-      'Permite editar do seu próprio cadastroas as informações pessoais como nome, data de nascimento, etc.',
+      'Permite editar do seu próprio cadastro as informações pessoais como nome, data de nascimento, etc.',
   },
   [Scope.CanEditAccountCredentials]: {
     title: 'Editar credenciais do cadastro',
