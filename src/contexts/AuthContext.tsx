@@ -37,10 +37,13 @@ export default function AuthContextProvider({
 
   const handleLoginData = useCallback(async () => {
     if (localStorage.getItem('accessToken')) {
-      const { data } = await getLoggedUser();
+      const { data, error } = await getLoggedUser();
       if (data?.getLoggedUser) {
         setUser(data?.getLoggedUser);
         navigate('/');
+      } else if (error?.graphQLErrors.length) {
+        localStorage.removeItem('accessToken');
+        navigate('/login');
       }
     }
   }, []);
