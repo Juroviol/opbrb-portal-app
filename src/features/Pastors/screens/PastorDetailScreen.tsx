@@ -13,6 +13,7 @@ import {
   Col,
   Collapse,
   Descriptions,
+  Empty,
   Flex,
   Form,
   notification,
@@ -450,6 +451,9 @@ function PastorDetailScreen() {
             <Table
               dataSource={getPastorQuery.data?.pastor.analysis || []}
               pagination={false}
+              locale={{
+                emptyText: <Empty description="Sem dados" />,
+              }}
               columns={[
                 {
                   title: 'Data',

@@ -1,4 +1,4 @@
-import { Card, Popover, Table } from 'antd';
+import { Card, Empty, Popover, Table } from 'antd';
 import dayjs from 'dayjs';
 import Pastor, { AnalysisType } from '@models/Pastor.ts';
 import { InfoCircleFilled } from '@ant-design/icons';
@@ -18,6 +18,9 @@ function HistoryAnalysis() {
       <Table
         dataSource={query.data?.pastor.analysis || []}
         pagination={false}
+        locale={{
+          emptyText: <Empty description="Sem dados" />,
+        }}
         columns={[
           {
             title: 'Data',
