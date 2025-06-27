@@ -116,7 +116,6 @@ function CreateOrEditProfileScreen() {
               >
                 {({ getFieldValue }) => (
                   <Transfer
-                    style={{ minWidth: '50%' }}
                     titles={['Todas permissões', 'Permissões deste perfil']}
                     dataSource={scopesQuery.data?.scopes.map((scope) => ({
                       key: scope,
@@ -132,7 +131,7 @@ function CreateOrEditProfileScreen() {
                         </Typography.Text>
                       </Flex>
                     )}
-                    listStyle={{ width: '100%', height: 500 }}
+                    listStyle={{ flex: 1, height: 500 }}
                   />
                 )}
               </Form.Item>

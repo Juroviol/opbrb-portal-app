@@ -529,7 +529,7 @@ function PastorDetailScreen() {
                             </Typography.Text>
                           </Flex>
                         )}
-                        listStyle={{ width: '100%', height: 500 }}
+                        listStyle={{ flex: 1, height: 500 }}
                       />
                     )}
                   </Form.Item>
